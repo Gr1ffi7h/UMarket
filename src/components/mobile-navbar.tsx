@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Search, Plus, User, LogOut, Menu, X, Home, UserCircle, Moon, Sun } from "lucide-react"
+import { Search, Plus, User, LogOut, Menu, X, Home, UserCircle, Moon, Sun, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -128,6 +128,17 @@ export function MobileNavbar() {
               <Plus className="w-5 h-5" />
               <span className="text-xs font-medium">Create</span>
             </Link>
+
+            {/* Messages */}
+            {user && (
+              <Link 
+                href="/messages"
+                className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors"
+              >
+                <MessageCircle className="w-5 h-5" />
+                <span className="text-xs font-medium">Messages</span>
+              </Link>
+            )}
 
             {/* Profile */}
             {user ? (

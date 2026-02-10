@@ -3,28 +3,65 @@
 import { useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, MapPin, User } from "lucide-react"
+import { ArrowLeft, MapPin, User, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { EmptyState } from "@/components/empty-state"
 import { Navbar } from "@/components/navbar"
 import { MobileNavbar } from "@/components/mobile-navbar"
+import { SellerRating } from "@/components/seller-rating"
 import { getItemById } from "@/lib/mock-data"
+import { auth } from "@/lib/auth"
+import { messaging } from "@/lib/messaging"
 
 export default function ItemDetailPage() {
   const params = useParams()
   const router = useRouter()
   const [contactMessage, setContactMessage] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
   
   const item = getItemById(params.id as string)
+  const user = auth.getCurrentUser()
 
   const handleContact = () => {
-    if (contactMessage.trim() && item) {
-      alert(`Message sent to ${item.seller.name}: "${contactMessage}"`)
-      setContactMessage("")
-    } else {
-      alert("Please enter a message before sending.")
+    if (!user) {
+      router.push("/auth/login")
+      return
     }
+
+    if (!item) return
+
+    setIsLoading(true)
+    
+    // Check if conversation already exists
+    const existingConversation = messaging.getConversationBetweenUsers(
+      user.id,
+      item.seller.id,
+      item.id
+    )
+
+    if (existingConversation) {
+      // Navigate to existing conversation
+      router.push(`/messages?conversation=${existingConversation.id}`)
+    } else {
+      // Create new conversation with default message
+      const defaultMessage = contactMessage.trim() || "Hey, is this still available?"
+      
+      messaging.sendMessage(
+        user.id,
+        item.seller.id,
+        defaultMessage,
+        item.id,
+        item.title,
+        user.name,
+        item.seller.name
+      )
+
+      // Navigate to messages
+      router.push("/messages")
+    }
+    
+    setIsLoading(false)
   }
 
   // Handle item not found
@@ -112,9 +149,9 @@ export default function ItemDetailPage() {
                       placeholder="Hi! I'm interested in this item. Is it still available?"
                       className="w-full p-3 border border-input rounded-md bg-background resize-none h-24"
                     />
-                    <Button onClick={handleContact} className="w-full">
-                      Send Message
-                    </Button>
+                    <Button onClick={handleContact} className="w-full" disabled={isLoading}>
+                    {isLoading ? "Sending..." : "Send Message"}
+                  </Button>
                   </div>
                 </div>
               </CardContent>
@@ -128,8 +165,8 @@ export default function ItemDetailPage() {
                   <CardTitle className="text-2xl">${item.price}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Button size="lg" className="w-full mb-4">
-                    Make Offer
+                  <Button size="lg" className="w-full mb-4" onClick={handleContact}>
+                    {isLoading ? "Sending..." : "Message Seller"}
                   </Button>
                   <p className="text-sm text-muted-foreground text-center">
                     Price is negotiable. Contact seller to discuss.
@@ -156,6 +193,7 @@ export default function ItemDetailPage() {
                       <p className="text-sm text-muted-foreground">
                         {item.seller.school}
                       </p>
+                      <SellerRating sellerId={item.seller.id} sellerName={item.seller.name} />
                     </div>
                   </div>
 

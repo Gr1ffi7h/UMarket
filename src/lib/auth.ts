@@ -4,6 +4,8 @@ export interface User {
   name: string
   school: string
   avatar?: string
+  avatarColor?: string
+  avatarType?: 'initials' | 'preset'
 }
 
 export interface AuthState {
@@ -28,7 +30,7 @@ class MockAuth {
     
     // Validate .edu email
     if (!email.endsWith('.edu')) {
-      throw new Error('Must be a .edu email address')
+      throw new Error('UMarket is currently limited to verified college students (.edu emails only).')
     }
 
     // Create mock user
@@ -53,7 +55,7 @@ class MockAuth {
     
     // Validate .edu email
     if (!email.endsWith('.edu')) {
-      throw new Error('Must be a .edu email address')
+      throw new Error('UMarket is currently limited to verified college students (.edu emails only).')
     }
 
     // Mock login - in real app would verify credentials

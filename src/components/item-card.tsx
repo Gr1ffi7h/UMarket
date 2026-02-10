@@ -2,6 +2,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { MapPin, User } from "lucide-react"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { SellerRating } from "./seller-rating"
 
 interface ItemCardProps {
   item: {
@@ -83,11 +84,14 @@ export function ItemCard({ item }: ItemCardProps) {
             <div className="w-6 h-6 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center flex-shrink-0">
               <User className="w-3 h-3 text-primary-foreground" />
             </div>
-            <div className="flex items-center justify-between w-full">
-              <span className="text-sm font-medium truncate">{item.seller.name}</span>
-              <span className="text-xs text-muted-foreground">
-                {item.seller.school.split(' ')[0]}
-              </span>
+            <div className="flex flex-col items-start w-full">
+              <div className="flex items-center justify-between w-full">
+                <span className="text-sm font-medium truncate">{item.seller.name}</span>
+                <span className="text-xs text-muted-foreground">
+                  {item.seller.school.split(' ')[0]}
+                </span>
+              </div>
+              <SellerRating sellerId={item.seller.id} size="sm" />
             </div>
           </div>
         </CardFooter>
