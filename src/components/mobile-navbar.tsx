@@ -21,6 +21,14 @@ export function MobileNavbar() {
     router.push("/")
   }
 
+  const handleLogoClick = () => {
+    if (user) {
+      router.push("/marketplace")
+    } else {
+      router.push("/auth/login")
+    }
+  }
+
   return (
     <>
       {/* Top Navigation Bar */}
@@ -28,12 +36,12 @@ export function MobileNavbar() {
         <div className="container mx-auto px-4">
           <div className="flex h-14 items-center justify-between">
             {/* Logo */}
-            <Link href="/marketplace" className="flex items-center space-x-2">
+            <div onClick={handleLogoClick} className="flex items-center space-x-2 cursor-pointer">
               <div className="h-7 w-7 rounded-lg bg-primary flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-sm">U</span>
               </div>
               <span className="font-bold text-lg">UMarket</span>
-            </Link>
+            </div>
 
             {/* Right Side Actions */}
             <div className="flex items-center space-x-2">

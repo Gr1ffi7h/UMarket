@@ -21,6 +21,14 @@ export function Navbar() {
     router.push("/")
   }
 
+  const handleLogoClick = () => {
+    if (user) {
+      router.push("/marketplace")
+    } else {
+      router.push("/auth/login")
+    }
+  }
+
   useEffect(() => {
     // Check for user changes on mount
     const currentUser = auth.getCurrentUser()
@@ -32,12 +40,12 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/marketplace" className="flex items-center space-x-2">
+          <div onClick={handleLogoClick} className="flex items-center space-x-2 cursor-pointer">
             <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-sm">U</span>
             </div>
             <span className="font-bold text-xl">UMarket</span>
-          </Link>
+          </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">

@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Navbar } from "@/components/navbar"
 import { MobileNavbar } from "@/components/mobile-navbar"
+import { AuthGuard } from "@/components/auth-guard"
 import { RouteProtection } from "@/components/route-protection"
 import { auth } from "@/lib/auth"
 import { messaging, Conversation, Message } from "@/lib/messaging"
@@ -116,7 +117,7 @@ function MessagesContent() {
   }
 
   return (
-    <RouteProtection requireAuth>
+    <AuthGuard>
       <div className="min-h-screen bg-background">
         {/* Desktop Navbar */}
         <div className="hidden md:block">
@@ -261,7 +262,7 @@ function MessagesContent() {
           </div>
         </div>
       </div>
-    </RouteProtection>
+    </AuthGuard>
   )
 }
 

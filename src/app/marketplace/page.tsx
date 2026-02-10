@@ -10,6 +10,7 @@ import { SponsoredItemCard } from "@/components/sponsored-item-card"
 import { TopSellers } from "@/components/top-sellers"
 import { Navbar } from "@/components/navbar"
 import { MobileNavbar } from "@/components/mobile-navbar"
+import { AuthGuard } from "@/components/auth-guard"
 import { mockItems, sponsoredItem } from "@/lib/mock-data"
 import { EmptyState } from "@/components/empty-state"
 
@@ -69,16 +70,17 @@ export default function MarketplacePage() {
   }, [filteredItems, searchTerm])
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Desktop Navbar */}
-      <div className="hidden md:block">
-        <Navbar />
-      </div>
-      
-      {/* Mobile Navbar */}
-      <div className="md:hidden">
-        <MobileNavbar />
-      </div>
+    <AuthGuard>
+      <div className="min-h-screen bg-background">
+        {/* Desktop Navbar */}
+        <div className="hidden md:block">
+          <Navbar />
+        </div>
+        
+        {/* Mobile Navbar */}
+        <div className="md:hidden">
+          <MobileNavbar />
+        </div>
       
       <main className="container mx-auto px-4 py-4 md:py-8">
         {/* Hero Section */}
@@ -168,5 +170,6 @@ export default function MarketplacePage() {
         </div>
       </main>
     </div>
+    </AuthGuard>
   )
 }
