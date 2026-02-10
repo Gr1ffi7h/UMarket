@@ -1,0 +1,49 @@
+@echo off
+echo UMarket Git Setup and Deployment Script
+echo =====================================
+echo.
+
+REM Check if Git is available
+git --version >nul 2>&1
+if %errorlevel% neq 0 (
+    echo ERROR: Git is not installed or not in PATH
+    echo Please install Git from https://git-scm.com/download/win
+    echo Then run this script again
+    pause
+    exit /b 1
+)
+
+echo Git found. Setting up repository...
+echo.
+
+REM Initialize Git repository
+echo Initializing Git repository...
+git init
+git branch -M main
+
+REM Add all files to staging
+echo Staging all files...
+git add .
+
+REM Create initial commit
+echo Creating commit...
+git commit -m "Ready for Vercel deploy"
+
+echo.
+echo Git repository is ready!
+echo.
+echo NEXT STEPS:
+echo 1. Create a new repository on GitHub: https://github.com/new
+echo 2. Name it 'umarket' (or your preferred name)
+echo 3. Copy the repository URL
+echo 4. Run these commands (replace YOUR_USERNAME with your GitHub username):
+echo    git remote add origin https://github.com/YOUR_USERNAME/umarket.git
+echo    git push -u origin main
+echo.
+echo After pushing to GitHub, you can deploy on Vercel:
+echo 1. Go to https://vercel.com
+echo 2. Click "New Project"
+echo 3. Import your GitHub repository
+echo 4. Click "Deploy"
+echo.
+pause
