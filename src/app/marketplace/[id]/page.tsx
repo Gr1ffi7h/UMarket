@@ -3,13 +3,14 @@
 import { useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, MapPin, User, MessageCircle } from "lucide-react"
+import { ArrowLeft, MapPin, User, MessageCircle, DollarSign } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { EmptyState } from "@/components/empty-state"
 import { Navbar } from "@/components/navbar"
 import { MobileNavbar } from "@/components/mobile-navbar"
 import { SellerRating } from "@/components/seller-rating"
+import { OfferModal } from "@/components/offer-modal"
 import { getItemById } from "@/lib/mock-data"
 import { auth } from "@/lib/auth"
 import { messaging } from "@/lib/messaging"
@@ -19,6 +20,8 @@ export default function ItemDetailPage() {
   const router = useRouter()
   const [contactMessage, setContactMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [isOfferModalOpen, setIsOfferModalOpen] = useState(false)
+  const [isOfferSubmitting, setIsOfferSubmitting] = useState(false)
   
   const item = getItemById(params.id as string)
   const user = auth.getCurrentUser()
@@ -64,6 +67,50 @@ export default function ItemDetailPage() {
     setIsLoading(false)
   }
 
+  const handleOffer = (offer: { price: number; message: string }) => {
+    if (!user || !item) return
+
+    setIsOfferSubmitting(true)
+    
+    // Check if conversation already exists
+    const existingConversation = messaging.getConversationBetweenUsers(
+      user.id,
+      item.seller.id,
+      item.id
+    )
+
+    const offerMessage = `💰 OFFER: $${offer.price.toFixed(2)}\n\n${offer.message}`
+
+    if (existingConversation) {
+      // Send offer to existing conversation
+      messaging.sendMessage(
+        user.id,
+        item.seller.id,
+        offerMessage,
+        item.id,
+        item.title,
+        user.name,
+        item.seller.name
+      )
+      router.push(`/messages?conversation=${existingConversation.id}`)
+    } else {
+      // Create new conversation with offer
+      messaging.sendMessage(
+        user.id,
+        item.seller.id,
+        offerMessage,
+        item.id,
+        item.title,
+        user.name,
+        item.seller.name
+      )
+      router.push("/messages")
+    }
+    
+    setIsOfferModalOpen(false)
+    setIsOfferSubmitting(false)
+  }
+
   // Handle item not found
   if (!item) {
     return (
@@ -100,7 +147,8 @@ export default function ItemDetailPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+    <>
+      <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <Link 
@@ -164,13 +212,34 @@ export default function ItemDetailPage() {
                 <CardHeader>
                   <CardTitle className="text-2xl">${item.price}</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <Button size="lg" className="w-full mb-4" onClick={handleContact}>
-                    {isLoading ? "Sending..." : "Message Seller"}
+                <CardContent className="space-y-3">
+                  <Button 
+                    size="lg" 
+                    className="w-full" 
+                    onClick={() => setIsOfferModalOpen(true)}
+                    disabled={!user}
+                  >
+                    <DollarSign className="w-4 h-4 mr-2" />
+                    Make Offer
                   </Button>
-                  <p className="text-sm text-muted-foreground text-center">
-                    Price is negotiable. Contact seller to discuss.
-                  </p>
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="w-full" 
+                    onClick={handleContact}
+                    disabled={!user}
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    Message Seller
+                  </Button>
+                  {!user && (
+                    <p className="text-xs text-muted-foreground text-center">
+                      <Link href="/auth/login" className="text-primary hover:underline">
+                        Log in
+                      </Link>{" "}
+                      to make offers or message sellers
+                    </p>
+                  )}
                 </CardContent>
               </Card>
 
@@ -224,5 +293,17 @@ export default function ItemDetailPage() {
         </div>
       </div>
     </main>
+
+    {/* Offer Modal */}
+    {item && (
+      <OfferModal
+        isOpen={isOfferModalOpen}
+        onClose={() => setIsOfferModalOpen(false)}
+        item={item}
+        onOfferSubmit={handleOffer}
+        isLoading={isOfferSubmitting}
+      />
+    )}
+  </>
   )
 }

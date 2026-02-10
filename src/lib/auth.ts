@@ -24,7 +24,7 @@ class MockAuth {
     return MockAuth.instance
   }
 
-  async signUp(email: string, password: string, name: string, school: string): Promise<User> {
+  async signUp(email: string, password: string, name: string, school: string, avatarData?: { type: 'initials' | 'preset'; value: string; color?: string }): Promise<User> {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000))
     
@@ -33,13 +33,15 @@ class MockAuth {
       throw new Error('UMarket is currently limited to verified college students (.edu emails only).')
     }
 
-    // Create mock user
+    // Create mock user with avatar data
     const user: User = {
       id: Math.random().toString(36).substr(2, 9),
       email,
       name,
       school,
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`
+      avatarType: avatarData?.type || 'initials',
+      avatar: avatarData?.value,
+      avatarColor: avatarData?.color || 'bg-blue-500'
     }
 
     this.user = user
@@ -78,6 +80,23 @@ class MockAuth {
     this.user = null
     if (typeof window !== 'undefined') {
       localStorage.removeItem('umarket_user')
+    }
+  }
+
+  updateUserAvatar(avatarData: { type: 'initials' | 'preset'; value: string; color?: string }): void {
+    const currentUser = this.getCurrentUser()
+    if (!currentUser) return
+
+    const updatedUser: User = {
+      ...currentUser,
+      avatarType: avatarData.type,
+      avatar: avatarData.value,
+      avatarColor: avatarData.color
+    }
+
+    this.user = updatedUser
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('umarket_user', JSON.stringify(updatedUser))
     }
   }
 

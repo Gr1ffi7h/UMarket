@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { AvatarSelector } from "@/components/avatar-selector"
 import { auth } from "@/lib/auth"
 import { Navbar } from "@/components/navbar"
 import { MobileNavbar } from "@/components/mobile-navbar"
@@ -17,6 +18,11 @@ export default function SignUpPage() {
     email: "",
     password: "",
     school: ""
+  })
+  const [avatarData, setAvatarData] = useState<{ type: 'initials' | 'preset'; value: string; color?: string }>({
+    type: 'initials',
+    value: '',
+    color: 'bg-blue-500'
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isLoading, setIsLoading] = useState(false)
@@ -49,7 +55,7 @@ export default function SignUpPage() {
     if (Object.keys(newErrors).length === 0) {
       setIsLoading(true)
       try {
-        await auth.signUp(formData.email, formData.password, formData.name, formData.school)
+        await auth.signUp(formData.email, formData.password, formData.name, formData.school, avatarData)
         router.push("/marketplace")
       } catch (error) {
         setErrors({ email: error instanceof Error ? error.message : "Sign up failed" })
@@ -161,6 +167,15 @@ export default function SignUpPage() {
               {errors.school && (
                 <p className="text-sm text-red-500">{errors.school}</p>
               )}
+            </div>
+
+            {/* Avatar Selection */}
+            <div className="space-y-4">
+              <AvatarSelector 
+                currentAvatar={avatarData.value}
+                currentColor={avatarData.color}
+                onAvatarChange={setAvatarData}
+              />
             </div>
 
             <Button type="submit" className="w-full" disabled={isLoading}>

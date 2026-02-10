@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Search, Plus, User, LogOut, Menu, X } from "lucide-react"
+import { Search, Plus, User, LogOut, Menu, X, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { UserAvatar } from "@/components/user-avatar"
 import { auth } from "@/lib/auth"
 
 export function Navbar() {
@@ -46,6 +47,14 @@ export function Navbar() {
             >
               Marketplace
             </Link>
+            {user && (
+              <Link 
+                href="/messages"
+                className="text-sm font-medium hover:text-primary transition-colors"
+              >
+                Messages
+              </Link>
+            )}
             <Link href="/marketplace/create">
               <Button size="sm" className="flex items-center gap-2">
                 <Plus className="w-4 h-4" />
@@ -72,11 +81,7 @@ export function Navbar() {
             {user ? (
               <div className="flex items-center space-x-3">
                 <div className="flex items-center space-x-2">
-                  <img 
-                    src={user.avatar} 
-                    alt={user.name}
-                    className="h-8 w-8 rounded-full"
-                  />
+                  <UserAvatar user={user} size="sm" />
                   <span className="text-sm font-medium">{user.name}</span>
                 </div>
                 <Button variant="ghost" size="sm" onClick={handleLogout}>
@@ -146,11 +151,7 @@ export function Navbar() {
                 {user ? (
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2">
-                      <img 
-                        src={user.avatar} 
-                        alt={user.name}
-                        className="h-8 w-8 rounded-full"
-                      />
+                      <UserAvatar user={user} size="sm" />
                       <span className="text-sm font-medium">{user.name}</span>
                     </div>
                     <Button variant="ghost" size="sm" onClick={handleLogout} className="w-full">

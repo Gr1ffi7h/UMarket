@@ -7,6 +7,7 @@ import { Search, Plus, User, LogOut, Menu, X, Home, UserCircle, Moon, Sun, Messa
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { UserAvatar } from "@/components/user-avatar"
 import { auth } from "@/lib/auth"
 
 export function MobileNavbar() {
@@ -78,11 +79,7 @@ export function MobileNavbar() {
                   {user ? (
                     <div className="space-y-3">
                       <div className="flex items-center space-x-2">
-                        <img 
-                          src={user.avatar} 
-                          alt={user.name}
-                          className="h-8 w-8 rounded-full"
-                        />
+                        <UserAvatar user={user} size="sm" />
                         <span className="text-sm font-medium">{user.name}</span>
                       </div>
                       <Button variant="ghost" size="sm" onClick={handleLogout} className="w-full">
