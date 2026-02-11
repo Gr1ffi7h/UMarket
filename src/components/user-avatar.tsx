@@ -2,6 +2,7 @@
 
 import { User } from "lucide-react"
 import { auth } from "@/lib/auth"
+import { ScalableAvatar } from "./scalable-avatar"
 
 interface UserAvatarProps {
   user?: {
@@ -10,7 +11,14 @@ interface UserAvatarProps {
     email: string
     avatar?: string
     avatarColor?: string
-    avatarType?: 'initials' | 'preset'
+    avatarType?: 'initials' | 'preset' | 'scalable'
+    avatarConfig?: {
+      skinTone: string
+      hairStyle: string
+      hairColor: string
+      shirtColor: string
+      accessory?: string
+    }
   }
   size?: "sm" | "md" | "lg" | "xl"
   showStatus?: boolean
@@ -73,6 +81,11 @@ export function UserAvatar({
   }
 
   const renderAvatar = () => {
+    // If user has a scalable avatar configuration
+    if (avatarUser.avatarType === 'scalable' && avatarUser.avatarConfig) {
+      return <ScalableAvatar user={avatarUser} size={size} showStatus={showStatus} className={className} />
+    }
+
     // If user has a preset avatar (emoji)
     if (avatarUser.avatarType === 'preset' && avatarUser.avatar) {
       return (

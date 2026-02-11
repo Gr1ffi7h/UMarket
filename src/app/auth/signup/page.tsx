@@ -55,8 +55,18 @@ export default function SignUpPage() {
     if (Object.keys(newErrors).length === 0) {
       setIsLoading(true)
       try {
-        await auth.signUp(formData.email, formData.password, formData.name, formData.school, avatarData)
-        router.push("/marketplace")
+        const user = await auth.signUp(formData.email, formData.password, formData.name, formData.school, avatarData)
+        
+        // Force state update before navigation
+        const currentUser = auth.getCurrentUser()
+        if (currentUser) {
+          router.push("/marketplace")
+        } else {
+          // Fallback if auth state doesn't update immediately
+          setTimeout(() => {
+            router.push("/marketplace")
+          }, 100)
+        }
       } catch (error) {
         setErrors({ email: error instanceof Error ? error.message : "Sign up failed" })
       } finally {
@@ -88,7 +98,7 @@ export default function SignUpPage() {
       </div>
       
       <main className="flex items-center justify-center p-4 min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)]">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-lg md:max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Join UMarket</CardTitle>
           <CardDescription>

@@ -5,7 +5,14 @@ export interface User {
   school: string
   avatar?: string
   avatarColor?: string
-  avatarType?: 'initials' | 'preset'
+  avatarType?: 'initials' | 'preset' | 'scalable'
+  avatarConfig?: {
+    skinTone: string
+    hairStyle: string
+    hairColor: string
+    shirtColor: string
+    accessory?: string
+  }
 }
 
 export interface AuthState {
