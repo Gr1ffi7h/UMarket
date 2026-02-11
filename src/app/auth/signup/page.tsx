@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { AvatarSelector } from "@/components/avatar-selector"
+import { AvatarConfigurator } from "@/components/AvatarConfigurator"
 import { useAuth } from "@/context/AuthContext"
 import { Navbar } from "@/components/navbar"
 import { MobileNavbar } from "@/components/mobile-navbar"
@@ -20,10 +20,11 @@ export default function SignUpPage() {
     password: "",
     school: ""
   })
-  const [avatarData, setAvatarData] = useState<{ type: 'initials' | 'preset' | 'scalable'; value: string; color?: string; avatarConfig?: any }>({
-    type: 'initials',
-    value: '',
-    color: 'bg-blue-500'
+  const [avatarConfig, setAvatarConfig] = useState({
+    skinTone: '#E5A87A',
+    hairStyle: 'medium',
+    hairColor: '#4a2c2a',
+    shirtColor: '#3b82f6'
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
 
@@ -54,7 +55,7 @@ export default function SignUpPage() {
 
     if (Object.keys(newErrors).length === 0) {
       try {
-        await signup(formData.email, formData.password, formData.name, formData.school, avatarData)
+        await signup(formData.email, formData.password, formData.name, formData.school, avatarConfig)
         router.push("/marketplace")
       } catch (error) {
         setErrors({ email: error instanceof Error ? error.message : "Sign up failed" })
@@ -85,7 +86,7 @@ export default function SignUpPage() {
       </div>
       
       <main className="flex items-center justify-center p-4 min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)]">
-      <Card className="w-full max-w-lg md:max-w-md">
+      <Card className="w-full max-w-2xl md:max-w-lg">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Join UMarket</CardTitle>
           <CardDescription>
@@ -166,12 +167,11 @@ export default function SignUpPage() {
               )}
             </div>
 
-            {/* Avatar Selection */}
+            {/* Avatar Configuration */}
             <div className="space-y-4">
-              <AvatarSelector 
-                currentAvatar={avatarData.value}
-                currentColor={avatarData.color}
-                onAvatarChange={setAvatarData}
+              <AvatarConfigurator 
+                onConfigChange={setAvatarConfig}
+                initialConfig={avatarConfig}
               />
             </div>
 

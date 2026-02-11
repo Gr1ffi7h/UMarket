@@ -7,15 +7,11 @@ export interface User {
   email: string
   name: string
   school: string
-  avatar?: string
-  avatarColor?: string
-  avatarType?: 'initials' | 'preset' | 'scalable'
   avatarConfig?: {
     skinTone: string
     hairStyle: string
     hairColor: string
     shirtColor: string
-    accessory?: string
   }
 }
 
@@ -24,7 +20,7 @@ interface AuthContextType {
   isAuthenticated: boolean
   isLoading: boolean
   login: (email: string, password: string) => Promise<void>
-  signup: (email: string, password: string, name: string, school: string, avatarData?: any) => Promise<void>
+  signup: (email: string, password: string, name: string, school: string, avatarConfig?: any) => Promise<void>
   logout: () => void
 }
 
@@ -46,7 +42,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Load session from localStorage on mount
+  // Load session from localStorage on mount ONLY
   useEffect(() => {
     try {
       const savedUser = localStorage.getItem('umarket_user')
@@ -64,7 +60,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, []) // Empty dependency array - run only once on mount
 
   const login = async (email: string, password: string) => {
     setIsLoading(true)
@@ -82,9 +78,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         id: Math.random().toString(36).substr(2, 9),
         email,
         name: email.split('@')[0],
-        school: 'University',
-        avatarType: 'initials',
-        avatarColor: 'bg-blue-500'
+        school: 'University'
       }
 
       // Save to localStorage
@@ -104,7 +98,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  const signup = async (email: string, password: string, name: string, school: string, avatarData?: any) => {
+  const signup = async (email: string, password: string, name: string, school: string, avatarConfig?: any) => {
     setIsLoading(true)
     try {
       // Simulate API call
@@ -115,16 +109,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
         throw new Error('UMarket is currently limited to verified college students (.edu emails only).')
       }
 
-      // Create mock user with avatar data
+      // Create mock user with avatar config
       const userData: User = {
         id: Math.random().toString(36).substr(2, 9),
         email,
         name,
         school,
-        avatarType: avatarData?.type || 'initials',
-        avatar: avatarData?.value,
-        avatarColor: avatarData?.color || 'bg-blue-500',
-        avatarConfig: avatarData?.type === 'scalable' ? avatarData : undefined
+        avatarConfig: avatarConfig
       }
 
       // Save to localStorage

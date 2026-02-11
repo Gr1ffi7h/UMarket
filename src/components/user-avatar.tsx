@@ -1,23 +1,19 @@
 "use client"
 
 import { User } from "lucide-react"
+import { Avatar } from "./Avatar"
 import { auth } from "@/lib/auth"
-import { ScalableAvatar } from "./scalable-avatar"
 
 interface UserAvatarProps {
   user?: {
     id: string
     name: string
     email: string
-    avatar?: string
-    avatarColor?: string
-    avatarType?: 'initials' | 'preset' | 'scalable'
     avatarConfig?: {
       skinTone: string
       hairStyle: string
       hairColor: string
       shirtColor: string
-      accessory?: string
     }
   }
   size?: "sm" | "md" | "lg" | "xl"
@@ -34,6 +30,11 @@ export function UserAvatar({
   const currentUser = auth.getCurrentUser()
   const avatarUser = user || currentUser
 
+  if (avatarUser?.avatarConfig) {
+    return <Avatar config={avatarUser.avatarConfig} size={size} className={className} />
+  }
+
+  // Fallback to initials if no avatar config
   const getSizeClasses = (size: string) => {
     switch (size) {
       case "sm": return "w-6 h-6"
@@ -44,34 +45,6 @@ export function UserAvatar({
     }
   }
 
-  const getIconSize = (size: string) => {
-    switch (size) {
-      case "sm": return "w-3 h-3"
-      case "md": return "w-4 h-4"
-      case "lg": return "w-6 h-6"
-      case "xl": return "w-8 h-8"
-      default: return "w-4 h-4"
-    }
-  }
-
-  const getEmojiSize = (size: string) => {
-    switch (size) {
-      case "sm": return "text-xs"
-      case "md": return "text-sm"
-      case "lg": return "text-lg"
-      case "xl": return "text-xl"
-      default: return "text-sm"
-    }
-  }
-
-  if (!avatarUser) {
-    return (
-      <div className={`rounded-full bg-muted flex items-center justify-center ${getSizeClasses(size)} ${className}`}>
-        <User className={`${getIconSize(size)} text-muted-foreground`} />
-      </div>
-    )
-  }
-
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -80,42 +53,13 @@ export function UserAvatar({
       .slice(0, 2)
   }
 
-  const renderAvatar = () => {
-    // If user has a scalable avatar configuration
-    if (avatarUser.avatarType === 'scalable' && avatarUser.avatarConfig) {
-      return <ScalableAvatar user={avatarUser} size={size} showStatus={showStatus} className={className} />
-    }
-
-    // If user has a preset avatar (emoji)
-    if (avatarUser.avatarType === 'preset' && avatarUser.avatar) {
-      return (
-        <div className={`rounded-full bg-muted flex items-center justify-center ${getSizeClasses(size)} ${className}`}>
-          <span className={`${getEmojiSize(size)}`}>{avatarUser.avatar}</span>
-        </div>
-      )
-    }
-
-    // If user has initials avatar with color
-    if (avatarUser.avatarType === 'initials') {
-      const colorClass = avatarUser.avatarColor || 'bg-blue-500'
-      return (
-        <div className={`rounded-full ${colorClass} flex items-center justify-center text-white font-semibold ${getSizeClasses(size)} ${className}`}>
-          {getInitials(avatarUser.name)}
-        </div>
-      )
-    }
-
-    // Default: initials with blue background
-    return (
-      <div className={`rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold ${getSizeClasses(size)} ${className}`}>
-        {getInitials(avatarUser.name)}
-      </div>
-    )
-  }
-
   return (
     <div className="relative">
-      {renderAvatar()}
+      <div className={`rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold ${getSizeClasses(size)} ${className}`}>
+        <span style={{ fontSize: size === 'sm' ? '10px' : size === 'lg' ? '18px' : size === 'xl' ? '24px' : '14px' }}>
+          {getInitials(avatarUser?.name || 'U')}
+        </span>
+      </div>
       {showStatus && (
         <div className="absolute bottom-0 right-0 w-2 h-2 bg-green-500 rounded-full border-2 border-background"></div>
       )}
