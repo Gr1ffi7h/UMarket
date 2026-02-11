@@ -7,25 +7,25 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AvatarSelector } from "@/components/avatar-selector"
-import { auth } from "@/lib/auth"
+import { useAuth } from "@/context/AuthContext"
 import { Navbar } from "@/components/navbar"
 import { MobileNavbar } from "@/components/mobile-navbar"
 
 export default function SignUpPage() {
   const router = useRouter()
+  const { signup, isLoading } = useAuth()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     school: ""
   })
-  const [avatarData, setAvatarData] = useState<{ type: 'initials' | 'preset'; value: string; color?: string }>({
+  const [avatarData, setAvatarData] = useState<{ type: 'initials' | 'preset' | 'scalable'; value: string; color?: string; avatarConfig?: any }>({
     type: 'initials',
     value: '',
     color: 'bg-blue-500'
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [isLoading, setIsLoading] = useState(false)
 
   const validateEmail = (email: string) => {
     return email.endsWith(".edu")
@@ -53,24 +53,11 @@ export default function SignUpPage() {
     }
 
     if (Object.keys(newErrors).length === 0) {
-      setIsLoading(true)
       try {
-        const user = await auth.signUp(formData.email, formData.password, formData.name, formData.school, avatarData)
-        
-        // Force state update before navigation
-        const currentUser = auth.getCurrentUser()
-        if (currentUser) {
-          router.push("/marketplace")
-        } else {
-          // Fallback if auth state doesn't update immediately
-          setTimeout(() => {
-            router.push("/marketplace")
-          }, 100)
-        }
+        await signup(formData.email, formData.password, formData.name, formData.school, avatarData)
+        router.push("/marketplace")
       } catch (error) {
         setErrors({ email: error instanceof Error ? error.message : "Sign up failed" })
-      } finally {
-        setIsLoading(false)
       }
     } else {
       setErrors(newErrors)

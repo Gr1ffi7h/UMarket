@@ -6,18 +6,18 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { auth } from "@/lib/auth"
+import { useAuth } from "@/context/AuthContext"
 import { Navbar } from "@/components/navbar"
 import { MobileNavbar } from "@/components/mobile-navbar"
 
 export default function LoginPage() {
   const router = useRouter()
+  const { login, isLoading } = useAuth()
   const [formData, setFormData] = useState({
     email: "",
     password: ""
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [isLoading, setIsLoading] = useState(false)
 
   const validateEmail = (email: string) => {
     return email.endsWith(".edu")
@@ -37,14 +37,11 @@ export default function LoginPage() {
     }
 
     if (Object.keys(newErrors).length === 0) {
-      setIsLoading(true)
       try {
-        await auth.login(formData.email, formData.password)
+        await login(formData.email, formData.password)
         router.push("/marketplace")
       } catch (error) {
         setErrors({ email: error instanceof Error ? error.message : "Login failed" })
-      } finally {
-        setIsLoading(false)
       }
     } else {
       setErrors(newErrors)

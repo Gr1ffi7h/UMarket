@@ -3,7 +3,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { SnowEffect } from "@/components/snow-effect"
-import { Navbar } from "@/components/navbar"
+import { AuthProvider } from "@/context/AuthContext"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -20,8 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <SnowEffect />
-        {children}
+        <AuthProvider>
+          <SnowEffect />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   )
