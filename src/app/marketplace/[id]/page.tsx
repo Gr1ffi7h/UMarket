@@ -12,19 +12,19 @@ import { MobileNavbar } from "@/components/mobile-navbar"
 import { SellerRating } from "@/components/seller-rating"
 import { OfferModal } from "@/components/offer-modal"
 import { getItemById } from "@/lib/mock-data"
-import { auth } from "@/lib/auth"
+import { useAuth } from "@/context/AuthContext"
 import { messaging } from "@/lib/messaging"
 
 export default function ItemDetailPage() {
   const params = useParams()
   const router = useRouter()
+  const { user } = useAuth()
   const [contactMessage, setContactMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isOfferModalOpen, setIsOfferModalOpen] = useState(false)
   const [isOfferSubmitting, setIsOfferSubmitting] = useState(false)
   
   const item = getItemById(params.id as string)
-  const user = auth.getCurrentUser()
 
   const handleContact = () => {
     if (!user) {

@@ -5,6 +5,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 export interface User {
   id: string
   email: string
+  password: string
   name: string
   school: string
 }
@@ -62,28 +63,39 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000))
       
+      // Normalize email to lowercase
+      const normalizedEmail = email.toLowerCase()
+      
       // Validate .edu email
-      if (!email.endsWith('.edu')) {
+      if (!normalizedEmail.endsWith('.edu')) {
         throw new Error('UMarket is currently limited to verified college students (.edu emails only).')
       }
 
-      // Create mock user
-      const userData: User = {
-        id: Math.random().toString(36).substr(2, 9),
-        email,
-        name: email.split('@')[0],
-        school: 'University'
+      // Read stored user from localStorage
+      const storedUserStr = localStorage.getItem('umarket_user')
+      if (!storedUserStr) {
+        throw new Error('No account found. Please sign up first.')
       }
 
-      // Save to localStorage
-      localStorage.setItem('umarket_user', JSON.stringify(userData))
+      const storedUser: User = JSON.parse(storedUserStr)
+      
+      // Validate credentials against stored user
+      if (storedUser.email !== normalizedEmail) {
+        throw new Error('Invalid email or password.')
+      }
+      
+      if (storedUser.password !== password) {
+        throw new Error('Invalid email or password.')
+      }
+
+      // Credentials match - set session
       localStorage.setItem('umarket_session', JSON.stringify({ 
         authenticated: true, 
         timestamp: Date.now() 
       }))
 
-      // Update state
-      setUser(userData)
+      // Update state with stored user
+      setUser(storedUser)
       
     } catch (error) {
       throw error
@@ -103,10 +115,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
         throw new Error('UMarket is currently limited to verified college students (.edu emails only).')
       }
 
-      // Create mock user
+      // Create mock user with password
       const userData: User = {
         id: Math.random().toString(36).substr(2, 9),
-        email,
+        email: email.toLowerCase(),  // Normalize to lowercase
+        password,                  // Save password
         name,
         school
       }
