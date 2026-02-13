@@ -7,12 +7,6 @@ export interface User {
   email: string
   name: string
   school: string
-  avatarConfig?: {
-    skinTone: string
-    hairStyle: string
-    hairColor: string
-    shirtColor: string
-  }
 }
 
 interface AuthContextType {
@@ -20,7 +14,7 @@ interface AuthContextType {
   isAuthenticated: boolean
   isLoading: boolean
   login: (email: string, password: string) => Promise<void>
-  signup: (email: string, password: string, name: string, school: string, avatarConfig?: any) => Promise<void>
+  signup: (email: string, password: string, name: string, school: string) => Promise<void>
   logout: () => void
 }
 
@@ -98,7 +92,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  const signup = async (email: string, password: string, name: string, school: string, avatarConfig?: any) => {
+  const signup = async (email: string, password: string, name: string, school: string) => {
     setIsLoading(true)
     try {
       // Simulate API call
@@ -109,13 +103,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
         throw new Error('UMarket is currently limited to verified college students (.edu emails only).')
       }
 
-      // Create mock user with avatar config
+      // Create mock user
       const userData: User = {
         id: Math.random().toString(36).substr(2, 9),
         email,
         name,
-        school,
-        avatarConfig: avatarConfig
+        school
       }
 
       // Save to localStorage

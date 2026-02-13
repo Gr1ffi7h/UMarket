@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { AvatarConfigurator } from "@/components/AvatarConfigurator"
 import { useAuth } from "@/context/AuthContext"
 import { Navbar } from "@/components/navbar"
 import { MobileNavbar } from "@/components/mobile-navbar"
@@ -19,12 +18,6 @@ export default function SignUpPage() {
     email: "",
     password: "",
     school: ""
-  })
-  const [avatarConfig, setAvatarConfig] = useState({
-    skinTone: '#E5A87A',
-    hairStyle: 'medium',
-    hairColor: '#4a2c2a',
-    shirtColor: '#3b82f6'
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
 
@@ -55,7 +48,7 @@ export default function SignUpPage() {
 
     if (Object.keys(newErrors).length === 0) {
       try {
-        await signup(formData.email, formData.password, formData.name, formData.school, avatarConfig)
+        await signup(formData.email, formData.password, formData.name, formData.school)
         router.push("/marketplace")
       } catch (error) {
         setErrors({ email: error instanceof Error ? error.message : "Sign up failed" })
@@ -165,14 +158,6 @@ export default function SignUpPage() {
               {errors.school && (
                 <p className="text-sm text-red-500">{errors.school}</p>
               )}
-            </div>
-
-            {/* Avatar Configuration */}
-            <div className="space-y-4">
-              <AvatarConfigurator 
-                onConfigChange={setAvatarConfig}
-                initialConfig={avatarConfig}
-              />
             </div>
 
             <Button type="submit" className="w-full" disabled={isLoading}>

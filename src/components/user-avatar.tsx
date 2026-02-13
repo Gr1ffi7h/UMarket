@@ -1,20 +1,10 @@
 "use client"
 
-import { User } from "lucide-react"
-import { Avatar } from "./Avatar"
-import { auth } from "@/lib/auth"
-
 interface UserAvatarProps {
   user?: {
     id: string
     name: string
     email: string
-    avatarConfig?: {
-      skinTone: string
-      hairStyle: string
-      hairColor: string
-      shirtColor: string
-    }
   }
   size?: "sm" | "md" | "lg" | "xl"
   showStatus?: boolean
@@ -27,14 +17,6 @@ export function UserAvatar({
   showStatus = false,
   className = ""
 }: UserAvatarProps) {
-  const currentUser = auth.getCurrentUser()
-  const avatarUser = user || currentUser
-
-  if (avatarUser?.avatarConfig) {
-    return <Avatar config={avatarUser.avatarConfig} size={size} className={className} />
-  }
-
-  // Fallback to initials if no avatar config
   const getSizeClasses = (size: string) => {
     switch (size) {
       case "sm": return "w-6 h-6"
@@ -45,19 +27,15 @@ export function UserAvatar({
     }
   }
 
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase())
-      .join('')
-      .slice(0, 2)
+  const getInitial = (name: string) => {
+    return name.charAt(0).toUpperCase()
   }
 
   return (
     <div className="relative">
-      <div className={`rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold ${getSizeClasses(size)} ${className}`}>
+      <div className={`rounded-full bg-neutral-300 dark:bg-neutral-600 flex items-center justify-center text-neutral-800 dark:text-neutral-200 font-semibold ${getSizeClasses(size)} ${className}`}>
         <span style={{ fontSize: size === 'sm' ? '10px' : size === 'lg' ? '18px' : size === 'xl' ? '24px' : '14px' }}>
-          {getInitials(avatarUser?.name || 'U')}
+          {getInitial(user?.name || 'U')}
         </span>
       </div>
       {showStatus && (
