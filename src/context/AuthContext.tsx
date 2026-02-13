@@ -1,21 +1,19 @@
 "use client"
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react"
+import { createContext, useContext, useState, useEffect, ReactNode } from "react"
 
-export interface User {
+type User = {
   id: string
   email: string
   password: string
-  name: string
-  school: string
+  displayName: string
 }
 
-interface AuthContextType {
+type AuthContextType = {
   user: User | null
-  isAuthenticated: boolean
-  isLoading: boolean
-  login: (email: string, password: string) => Promise<void>
-  signup: (email: string, password: string, name: string, school: string) => Promise<void>
+  loading: boolean
+  login: (email: string, password: string) => boolean
+  signup: (email: string, password: string, displayName: string) => boolean
   logout: () => void
 }
 
@@ -29,128 +27,154 @@ export function useAuth() {
   return context
 }
 
-interface AuthProviderProps {
-  children: ReactNode
-}
-
-export function AuthProvider({ children }: AuthProviderProps) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
 
   // Load session from localStorage on mount ONLY
   useEffect(() => {
     try {
-      const savedUser = localStorage.getItem('umarket_user')
+      console.log('🔍 Loading session from localStorage...')
       const savedSession = localStorage.getItem('umarket_session')
+      const savedUsers = localStorage.getItem('umarket_users')
       
-      if (savedUser && savedSession) {
-        const userData = JSON.parse(savedUser)
-        setUser(userData)
+      console.log('📦 Found session:', savedSession)
+      console.log('👥 Found users:', savedUsers)
+      
+      if (savedSession && savedUsers) {
+        const session = JSON.parse(savedSession)
+        const users = JSON.parse(savedUsers)
+        const currentUser = users.find((u: User) => u.id === session.userId)
+        
+        if (currentUser) {
+          console.log('✅ Session valid, setting user:', currentUser)
+          setUser(currentUser)
+        } else {
+          console.log('❌ Session user not found')
+          localStorage.removeItem('umarket_session')
+        }
+      } else {
+        console.log('ℹ️ No session found')
       }
     } catch (error) {
-      console.error('Error loading user session:', error)
+      console.error('❌ Error loading session:', error)
       // Clear corrupted data
-      localStorage.removeItem('umarket_user')
       localStorage.removeItem('umarket_session')
+      localStorage.removeItem('umarket_users')
     } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
   }, []) // Empty dependency array - run only once on mount
 
-  const login = async (email: string, password: string) => {
-    setIsLoading(true)
+  const login = (email: string, password: string): boolean => {
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      console.log('🔐 Attempting login for:', email)
       
-      // Normalize email to lowercase
+      const savedUsers = localStorage.getItem('umarket_users')
+      if (!savedUsers) {
+        console.log('❌ No users found')
+        return false
+      }
+
+      const users = JSON.parse(savedUsers)
       const normalizedEmail = email.toLowerCase()
       
-      // Validate .edu email
-      if (!normalizedEmail.endsWith('.edu')) {
-        throw new Error('UMarket is currently limited to verified college students (.edu emails only).')
-      }
-
-      // Read stored user from localStorage
-      const storedUserStr = localStorage.getItem('umarket_user')
-      if (!storedUserStr) {
-        throw new Error('No account found. Please sign up first.')
-      }
-
-      const storedUser: User = JSON.parse(storedUserStr)
+      const foundUser = users.find((u: User) => u.email.toLowerCase() === normalizedEmail)
       
-      // Validate credentials against stored user
-      if (storedUser.email !== normalizedEmail) {
-        throw new Error('Invalid email or password.')
+      if (!foundUser) {
+        console.log('❌ User not found')
+        return false
       }
       
-      if (storedUser.password !== password) {
-        throw new Error('Invalid email or password.')
+      if (foundUser.password !== password) {
+        console.log('❌ Password mismatch')
+        return false
       }
-
-      // Credentials match - set session
-      localStorage.setItem('umarket_session', JSON.stringify({ 
-        authenticated: true, 
-        timestamp: Date.now() 
+      
+      // Login successful
+      console.log('✅ Login successful for:', foundUser)
+      
+      // Set session
+      localStorage.setItem('umarket_session', JSON.stringify({
+        userId: foundUser.id,
+        timestamp: Date.now()
       }))
-
-      // Update state with stored user
-      setUser(storedUser)
+      
+      // Update state
+      setUser(foundUser)
+      return true
       
     } catch (error) {
-      throw error
-    } finally {
-      setIsLoading(false)
+      console.error('❌ Login error:', error)
+      return false
     }
   }
 
-  const signup = async (email: string, password: string, name: string, school: string) => {
-    setIsLoading(true)
+  const signup = (email: string, password: string, displayName: string): boolean => {
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-
+      console.log('📝 Attempting signup for:', email)
+      
       // Validate .edu email
       if (!email.endsWith('.edu')) {
-        throw new Error('UMarket is currently limited to verified college students (.edu emails only).')
+        console.log('❌ Invalid email domain')
+        return false
       }
-
-      // Create mock user with password
-      const userData: User = {
+      
+      // Get existing users
+      let users: User[] = []
+      const savedUsers = localStorage.getItem('umarket_users')
+      if (savedUsers) {
+        users = JSON.parse(savedUsers)
+      }
+      
+      // Check if user already exists
+      const normalizedEmail = email.toLowerCase()
+      const existingUser = users.find((u: User) => u.email.toLowerCase() === normalizedEmail)
+      
+      if (existingUser) {
+        console.log('❌ User already exists')
+        return false
+      }
+      
+      // Create new user
+      const newUser: User = {
         id: Math.random().toString(36).substr(2, 9),
-        email: email.toLowerCase(),  // Normalize to lowercase
-        password,                  // Save password
-        name,
-        school
+        email: normalizedEmail,
+        password,
+        displayName
       }
-
-      // Save to localStorage
-      localStorage.setItem('umarket_user', JSON.stringify(userData))
-      localStorage.setItem('umarket_session', JSON.stringify({ 
-        authenticated: true, 
-        timestamp: Date.now() 
+      
+      // Save user
+      users.push(newUser)
+      localStorage.setItem('umarket_users', JSON.stringify(users))
+      
+      // Set session
+      localStorage.setItem('umarket_session', JSON.stringify({
+        userId: newUser.id,
+        timestamp: Date.now()
       }))
-
+      
       // Update state
-      setUser(userData)
+      setUser(newUser)
+      
+      console.log('✅ Signup successful:', newUser)
+      return true
       
     } catch (error) {
-      throw error
-    } finally {
-      setIsLoading(false)
+      console.error('❌ Signup error:', error)
+      return false
     }
   }
 
   const logout = () => {
+    console.log('🚪 Logging out...')
     setUser(null)
-    localStorage.removeItem('umarket_user')
     localStorage.removeItem('umarket_session')
   }
 
   const value: AuthContextType = {
     user,
-    isAuthenticated: !!user,
-    isLoading,
+    loading,
     login,
     signup,
     logout

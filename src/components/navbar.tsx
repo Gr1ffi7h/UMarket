@@ -28,10 +28,6 @@ export function Navbar() {
     }
   }
 
-  useEffect(() => {
-    // AuthContext handles persistence automatically
-  }, [])
-
   return (
     <nav className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="container mx-auto px-4">

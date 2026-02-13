@@ -12,58 +12,57 @@ import { MobileNavbar } from "@/components/mobile-navbar"
 
 export default function SignUpPage() {
   const router = useRouter()
-  const { signup, isLoading } = useAuth()
+  const { signup, loading } = useAuth()
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     password: "",
-    school: ""
+    displayName: ""
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
-
-  const validateEmail = (email: string) => {
-    return email.endsWith(".edu")
-  }
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const newErrors: Record<string, string> = {}
+    setIsSubmitting(true)
+    setErrors({})
 
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required"
-    }
+    // Basic validation
+    const newErrors: Record<string, string> = {}
     if (!formData.email.trim()) {
       newErrors.email = "Email is required"
-    } else if (!validateEmail(formData.email)) {
-      newErrors.email = "Must be a .edu email address"
+    } else if (!formData.email.endsWith('.edu')) {
+      newErrors.email = "UMarket is currently limited to verified college students (.edu emails only)."
     }
     if (!formData.password.trim()) {
       newErrors.password = "Password is required"
     } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters"
     }
-    if (!formData.school.trim()) {
-      newErrors.school = "School is required"
+    if (!formData.displayName.trim()) {
+      newErrors.displayName = "Display name is required"
     }
 
-    if (Object.keys(newErrors).length === 0) {
-      try {
-        await signup(formData.email, formData.password, formData.name, formData.school)
-        router.push("/marketplace")
-      } catch (error) {
-        setErrors({ email: error instanceof Error ? error.message : "Sign up failed" })
-      }
-    } else {
+    if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
+      setIsSubmitting(false)
+      return
     }
+
+    // Attempt signup
+    const success = signup(formData.email, formData.password, formData.displayName)
+    
+    if (success) {
+      router.push("/marketplace")
+    } else {
+      setErrors({ email: "Signup failed. Please try again." })
+    }
+    
+    setIsSubmitting(false)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: "" }))
-    }
   }
 
   return (
@@ -78,107 +77,103 @@ export default function SignUpPage() {
         <MobileNavbar />
       </div>
       
-      <main className="flex items-center justify-center p-4 min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)]">
-      <Card className="w-full max-w-2xl md:max-w-lg">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Join UMarket</CardTitle>
-          <CardDescription>
-            Create your account with your .edu email
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="name" className="text-sm font-medium">
-                Full Name
-              </label>
-              <Input
-                id="name"
-                name="name"
-                type="text"
-                placeholder="John Doe"
-                value={formData.name}
-                onChange={handleChange}
-                className={errors.name ? "border-red-500" : ""}
-              />
-              {errors.name && (
-                <p className="text-sm text-red-500">{errors.name}</p>
-              )}
-            </div>
+      <main className="container mx-auto px-4 py-8">
+        <div className="max-w-md mx-auto">
+          <Card>
+            <CardHeader className="space-y-1">
+              <CardTitle>Create Account</CardTitle>
+              <CardDescription>
+                Join your college marketplace today
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Email */}
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium mb-2">
+                    .edu Email Address
+                  </label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="your.name@university.edu"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={errors.email ? "border-red-500" : ""}
+                    required
+                  />
+                  {errors.email && (
+                    <p className="text-sm text-red-500 mt-1">{errors.email}</p>
+                  )}
+                </div>
 
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium">
-                School Email
-              </label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="student@university.edu"
-                value={formData.email}
-                onChange={handleChange}
-                className={errors.email ? "border-red-500" : ""}
-              />
-              {errors.email && (
-                <p className="text-sm text-red-500">{errors.email}</p>
-              )}
-            </div>
+                {/* Display Name */}
+                <div>
+                  <label htmlFor="displayName" className="block text-sm font-medium mb-2">
+                    Display Name
+                  </label>
+                  <Input
+                    id="displayName"
+                    name="displayName"
+                    type="text"
+                    placeholder="John Doe"
+                    value={formData.displayName}
+                    onChange={handleChange}
+                    className={errors.displayName ? "border-red-500" : ""}
+                    required
+                  />
+                  {errors.displayName && (
+                    <p className="text-sm text-red-500 mt-1">{errors.displayName}</p>
+                  )}
+                </div>
 
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium">
-                Password
-              </label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="••••••••"
-                value={formData.password}
-                onChange={handleChange}
-                className={errors.password ? "border-red-500" : ""}
-              />
-              {errors.password && (
-                <p className="text-sm text-red-500">{errors.password}</p>
-              )}
-            </div>
+                {/* Password */}
+                <div>
+                  <label htmlFor="password" className="block text-sm font-medium mb-2">
+                    Password
+                  </label>
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className={errors.password ? "border-red-500" : ""}
+                    required
+                  />
+                  {errors.password && (
+                    <p className="text-sm text-red-500 mt-1">{errors.password}</p>
+                  )}
+                </div>
 
-            <div className="space-y-2">
-              <label htmlFor="school" className="text-sm font-medium">
-                School
-              </label>
-              <Input
-                id="school"
-                name="school"
-                type="text"
-                placeholder="University Name"
-                value={formData.school}
-                onChange={handleChange}
-                className={errors.school ? "border-red-500" : ""}
-              />
-              {errors.school && (
-                <p className="text-sm text-red-500">{errors.school}</p>
-              )}
-            </div>
+                {/* Submit Button */}
+                <Button 
+                  type="submit" 
+                  className="w-full" 
+                  disabled={loading || isSubmitting}
+                >
+                  {isSubmitting ? "Creating Account..." : "Sign Up"}
+                </Button>
+              </form>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Creating Account..." : "Sign Up"}
-            </Button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-muted-foreground">
-              Already have an account?{" "}
-              <Link 
-                href="/auth/login" 
-                className="text-primary hover:underline"
-              >
-                Log in
-              </Link>
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-    </main>
+              {/* Login Link */}
+              <div className="mt-6 text-center">
+                <p className="text-sm text-muted-foreground">
+                  Already have an account?{" "}
+                  <Link 
+                    href="/auth/login" 
+                    className="text-primary hover:underline"
+                  >
+                    Sign in
+                  </Link>
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
     </div>
   )
 }
