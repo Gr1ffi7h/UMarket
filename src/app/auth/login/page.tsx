@@ -21,9 +21,12 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log("🔐 Login button clicked!")
     e.preventDefault()
     setIsSubmitting(true)
     setErrors({})
+
+    console.log("📧 Form data:", { email: formData.email, password: "•••••" })
 
     // Basic validation
     const newErrors: Record<string, string> = {}
@@ -35,17 +38,22 @@ export default function LoginPage() {
     }
 
     if (Object.keys(newErrors).length > 0) {
+      console.log("❌ Validation errors:", newErrors)
       setErrors(newErrors)
       setIsSubmitting(false)
       return
     }
 
     // Attempt login
+    console.log("🔍 Calling login function...")
     const success = login(formData.email, formData.password)
+    console.log("📊 Login result:", success)
     
     if (success) {
+      console.log("✅ Login successful, redirecting to /marketplace")
       router.push("/marketplace")
     } else {
+      console.log("❌ Login failed, showing error")
       setErrors({ email: "Invalid email or password." })
     }
     
