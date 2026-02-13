@@ -10,7 +10,6 @@ import { SponsoredItemCard } from "@/components/sponsored-item-card"
 import { TopSellers } from "@/components/top-sellers"
 import { Navbar } from "@/components/navbar"
 import { MobileNavbar } from "@/components/mobile-navbar"
-import { AuthGuard } from "@/components/auth-guard"
 import { mockItems, sponsoredItem } from "@/lib/mock-data"
 import { EmptyState } from "@/components/empty-state"
 
@@ -70,8 +69,7 @@ export default function MarketplacePage() {
   }, [filteredItems, searchTerm])
 
   return (
-    <AuthGuard>
-      <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background">
         {/* Desktop Navbar */}
         <div className="hidden md:block">
           <Navbar />
@@ -165,6 +163,5 @@ export default function MarketplacePage() {
         </div>
       </main>
     </div>
-    </AuthGuard>
   )
 }

@@ -9,7 +9,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Navbar } from "@/components/navbar"
 import { MobileNavbar } from "@/components/mobile-navbar"
-import { AuthGuard } from "@/components/auth-guard"
 
 const categories = [
   "Textbooks",
@@ -63,8 +62,7 @@ export default function CreateListingPage() {
   }
 
   return (
-    <AuthGuard>
-      <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background">
         {/* Desktop Navbar */}
         <div className="hidden md:block">
           <Navbar />
@@ -284,6 +282,5 @@ export default function CreateListingPage() {
           </div>
         </main>
       </div>
-    </AuthGuard>
   )
 }
