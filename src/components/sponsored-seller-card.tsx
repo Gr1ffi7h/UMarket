@@ -12,11 +12,11 @@ interface SponsoredSellerCardProps {
 
 export function SponsoredSellerCard({ seller }: SponsoredSellerCardProps) {
   return (
-    <Card className="border-amber-200 dark:border-amber-800 bg-gradient-to-r from-amber-50/50 to-amber-100/50 dark:from-amber-900/10 dark:to-amber-800/10">
+    <Card className="border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-900/10">
       <CardContent className="p-4">
         {/* Sponsored Badge */}
         <div className="flex items-center gap-2 mb-3">
-          <div className="flex items-center gap-1 bg-amber-500/90 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full font-medium">
+          <div className="flex items-center gap-1 bg-amber-500 text-white text-xs px-2 py-1 rounded-full font-medium">
             <Star className="w-3 h-3" />
             Sponsored Seller
           </div>

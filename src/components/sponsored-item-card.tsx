@@ -26,7 +26,7 @@ export function SponsoredItemCard({ item }: SponsoredItemCardProps) {
     <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden border-0 shadow-md hover:shadow-xl relative">
       {/* Sponsored Badge Overlay */}
       <div className="absolute top-2 left-2 z-10">
-        <div className="flex items-center gap-1 bg-amber-500/90 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full font-medium">
+        <div className="flex items-center gap-1 bg-amber-500 text-white text-xs px-2 py-1 rounded-full font-medium">
           <Star className="w-3 h-3" />
           Sponsored
         </div>
@@ -34,25 +34,25 @@ export function SponsoredItemCard({ item }: SponsoredItemCardProps) {
 
       {/* Image Section */}
       <div className="relative aspect-square overflow-hidden">
-        <div className="w-full h-full bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 flex items-center justify-center">
+        <div className="w-full h-full bg-muted flex items-center justify-center">
           <div className="text-center">
-            <div className="w-16 h-16 bg-amber-200 dark:bg-amber-800/30 rounded-lg mx-auto mb-2 flex items-center justify-center">
+            <div className="w-16 h-16 bg-muted-foreground/10 rounded-lg mx-auto mb-2 flex items-center justify-center">
               <span className="text-2xl">📦</span>
             </div>
-            <p className="text-sm text-muted-foreground">Promoted Item</p>
+            <p className="text-sm text-muted-foreground">Sponsored Item</p>
           </div>
         </div>
         
         {/* Category Badge */}
         <div className="absolute top-2 right-2">
-          <span className="bg-background/90 backdrop-blur-sm text-xs px-2 py-1 rounded-full font-medium">
+          <span className="bg-background text-xs px-2 py-1 rounded-full font-medium">
             {item.category}
           </span>
         </div>
 
         {/* Condition Badge */}
         <div className="absolute bottom-2 right-2">
-          <span className="bg-primary/90 backdrop-blur-sm text-primary-foreground text-xs px-2 py-1 rounded-full font-medium">
+          <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full font-medium">
             {item.condition}
           </span>
         </div>
@@ -87,7 +87,7 @@ export function SponsoredItemCard({ item }: SponsoredItemCardProps) {
       {/* Footer Section */}
       <CardFooter className="px-4 pb-4 pt-0">
         <div className="flex items-center gap-2 w-full">
-          <div className="w-6 h-6 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center flex-shrink-0">
+          <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0">
             <User className="w-3 h-3 text-white" />
           </div>
           <div className="flex items-center justify-between w-full">
