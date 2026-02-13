@@ -284,6 +284,6 @@ export default function CreateListingPage() {
           </div>
         </main>
       </div>
-    </RouteProtection>
+    </AuthGuard>
   )
 }
