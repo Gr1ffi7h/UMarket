@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react"
 
-type User = {
+export type User = {
   id: string
   email: string
   password: string

@@ -83,7 +83,7 @@ export function Navbar() {
               <div className="flex items-center space-x-3">
                 <div className="flex items-center space-x-2">
                   <UserAvatar user={user} size="sm" />
-                  <span className="text-sm font-medium">{user.name}</span>
+                  <span className="text-sm font-medium">{user.displayName}</span>
                 </div>
                 <Button variant="ghost" size="sm" onClick={handleLogout}>
                   <LogOut className="w-4 h-4" />
@@ -153,7 +153,7 @@ export function Navbar() {
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2">
                       <UserAvatar user={user} size="sm" />
-                      <span className="text-sm font-medium">{user.name}</span>
+                      <span className="text-sm font-medium">{user.displayName}</span>
                     </div>
                     <Button variant="ghost" size="sm" onClick={handleLogout} className="w-full">
                       <LogOut className="w-4 h-4 mr-2" />

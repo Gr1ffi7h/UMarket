@@ -1,4 +1,4 @@
-import { User } from './auth'
+import { User } from '@/context/AuthContext'
 
 export interface Message {
   id: string

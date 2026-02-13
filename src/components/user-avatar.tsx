@@ -3,7 +3,7 @@
 interface UserAvatarProps {
   user?: {
     id: string
-    name: string
+    displayName: string
     email: string
   }
   size?: "sm" | "md" | "lg" | "xl"
@@ -35,7 +35,7 @@ export function UserAvatar({
     <div className="relative">
       <div className={`rounded-full bg-neutral-300 dark:bg-neutral-600 flex items-center justify-center text-neutral-800 dark:text-neutral-200 font-semibold ${getSizeClasses(size)} ${className}`}>
         <span style={{ fontSize: size === 'sm' ? '10px' : size === 'lg' ? '18px' : size === 'xl' ? '24px' : '14px' }}>
-          {getInitial(user?.name || 'U')}
+          {getInitial(user?.displayName || 'U')}
         </span>
       </div>
       {showStatus && (

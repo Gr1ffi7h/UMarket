@@ -60,7 +60,7 @@ function MessagesContent() {
       message.trim(),
       selectedConversation.itemId,
       selectedConversation.itemTitle,
-      user.name,
+      user.displayName,
       receiverName
     )
 

@@ -56,7 +56,7 @@ export default function ItemDetailPage() {
         defaultMessage,
         item.id,
         item.title,
-        user.name,
+        user.displayName,
         item.seller.name
       )
 
@@ -89,7 +89,7 @@ export default function ItemDetailPage() {
         offerMessage,
         item.id,
         item.title,
-        user.name,
+        user.displayName,
         item.seller.name
       )
       router.push(`/messages?conversation=${existingConversation.id}`)
@@ -101,7 +101,7 @@ export default function ItemDetailPage() {
         offerMessage,
         item.id,
         item.title,
-        user.name,
+        user.displayName,
         item.seller.name
       )
       router.push("/messages")
