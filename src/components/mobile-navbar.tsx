@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Search, Plus, User, LogOut, Menu, X, Home, UserCircle, Moon, Sun, MessageCircle } from "lucide-react"
@@ -8,16 +8,15 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { UserAvatar } from "@/components/user-avatar"
-import { auth } from "@/lib/auth"
+import { useAuth } from "@/context/AuthContext"
 
 export function MobileNavbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [user, setUser] = useState(auth.getCurrentUser())
+  const { user, logout } = useAuth()
   const router = useRouter()
 
   const handleLogout = () => {
-    auth.logout()
-    setUser(null)
+    logout()
     router.push("/")
   }
 

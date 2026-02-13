@@ -2,27 +2,32 @@
 
 import { useEffect, ReactNode } from "react"
 import { useRouter } from "next/navigation"
-import { auth } from "@/lib/auth"
+import { useAuth } from "@/context/AuthContext"
+import { LoadingSkeleton } from "./loading-skeleton"
 
 interface AuthGuardProps {
   children: ReactNode
-  fallback?: ReactNode
 }
 
-export function AuthGuard({ children, fallback }: AuthGuardProps) {
+export function AuthGuard({ children }: AuthGuardProps) {
+  const { user, isLoading } = useAuth()
   const router = useRouter()
-  const user = auth.getCurrentUser()
 
   useEffect(() => {
-    // If user is not authenticated, redirect to login
-    if (!user) {
+    // Only redirect after loading is complete and user is not authenticated
+    if (!isLoading && !user) {
       router.push("/auth/login")
     }
-  }, [user, router])
+  }, [user, isLoading, router])
 
-  // If not authenticated, show fallback or nothing
+  // Show loading skeleton while checking auth
+  if (isLoading) {
+    return <LoadingSkeleton />
+  }
+
+  // If not authenticated and not loading, the useEffect will handle redirect
   if (!user) {
-    return <>{fallback || null}</>
+    return <LoadingSkeleton />
   }
 
   return <>{children}</>

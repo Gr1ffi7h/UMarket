@@ -9,21 +9,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Navbar } from "@/components/navbar"
 import { MobileNavbar } from "@/components/mobile-navbar"
-import { AuthGuard } from "@/components/auth-guard"
-import { RouteProtection } from "@/components/route-protection"
-import { auth } from "@/lib/auth"
+import { useAuth } from "@/context/AuthContext"
 import { messaging, Conversation, Message } from "@/lib/messaging"
 
 function MessagesContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { user } = useAuth()
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null)
   const [message, setMessage] = useState("")
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const user = auth.getCurrentUser()
     if (!user) {
       router.push("/auth/login")
       return
@@ -45,14 +43,13 @@ function MessagesContent() {
     }
     
     setIsLoading(false)
-  }, [router, searchParams])
+  }, [router, searchParams, user])
 
   const handleSendMessage = () => {
     if (!message.trim() || !selectedConversation) return
 
-    const user = auth.getCurrentUser()
     if (!user) return
-
+    
     const isSeller = user.id === selectedConversation.sellerId
     const receiverId = isSeller ? selectedConversation.buyerId : selectedConversation.sellerId
     const receiverName = isSeller ? selectedConversation.buyerName : selectedConversation.sellerName
@@ -94,48 +91,46 @@ function MessagesContent() {
 
   if (isLoading) {
     return (
-      <RouteProtection requireAuth>
-        <div className="min-h-screen bg-background">
-          <Navbar />
-          <div className="container mx-auto px-4 py-8">
-            <div className="animate-pulse">
-              <div className="h-8 bg-gray-200 rounded mb-4 w-32"></div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="md:col-span-1 space-y-4">
-                  <div className="h-20 bg-gray-200 rounded"></div>
-                  <div className="h-20 bg-gray-200 rounded"></div>
-                </div>
-                <div className="md:col-span-2">
-                  <div className="h-96 bg-gray-200 rounded"></div>
-                </div>
-              </div>
-            </div>
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex items-center gap-4 mb-8">
+            <Link href="/marketplace">
+              <Button variant="ghost" size="sm">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Marketplace
+              </Button>
+            </Link>
           </div>
         </div>
-      </RouteProtection>
+      </div>
     )
   }
 
   return (
-    <AuthGuard>
-      <div className="min-h-screen bg-background">
-        {/* Desktop Navbar */}
-        <div className="hidden md:block">
-          <Navbar />
+    <div className="min-h-screen bg-background">
+      {/* Desktop Navbar */}
+      <div className="hidden md:block">
+        <Navbar />
+      </div>
+      
+      {/* Mobile Navbar */}
+      <div className="md:hidden">
+        <MobileNavbar />
+      </div>
+      
+      <div className="container mx-auto px-4 py-4 md:py-8">
+        {/* Mobile Back Button */}
+        <div className="md:hidden mb-4">
+          <Button 
+            variant="ghost" 
+            onClick={() => router.back()}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Button>
         </div>
-        
-        {/* Mobile Navbar */}
-        <div className="md:hidden">
-          <MobileNavbar />
-        </div>
-        
-        <div className="container mx-auto px-4 py-4 md:py-8">
-          {/* Mobile Back Button */}
-          <div className="md:hidden mb-4">
-            <Button 
-              variant="ghost" 
-              onClick={() => router.back()}
-              className="flex items-center gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
               Back
@@ -173,7 +168,7 @@ function MessagesContent() {
                             <div className="flex-1 min-w-0">
                               <p className="font-medium text-sm truncate">{conv.itemTitle}</p>
                               <p className="text-xs text-muted-foreground">
-                                {conv.buyerId === auth.getCurrentUser()?.id ? conv.sellerName : conv.buyerName}
+                                {conv.buyerId === user?.id ? conv.sellerName : conv.buyerName}
                               </p>
                             </div>
                             <span className="text-xs text-muted-foreground ml-2">
@@ -199,8 +194,9 @@ function MessagesContent() {
                     <CardTitle className="text-lg">
                       {selectedConversation.itemTitle}
                     </CardTitle>
+                    <CardTitle>Messages</CardTitle>
                     <p className="text-sm text-muted-foreground">
-                      {selectedConversation.buyerId === auth.getCurrentUser()?.id 
+                      {selectedConversation.buyerId === user?.id 
                         ? `Talking to ${selectedConversation.sellerName}`
                         : `Talking to ${selectedConversation.buyerName}`
                       }
@@ -209,7 +205,7 @@ function MessagesContent() {
                   <CardContent className="flex-1 overflow-y-auto p-4">
                     <div className="space-y-4">
                       {selectedConversation.messages.map((msg) => {
-                        const isOwn = msg.senderId === auth.getCurrentUser()?.id
+                        const isOwn = msg.senderId === user?.id
                         return (
                           <div
                             key={msg.id}
