@@ -3,9 +3,11 @@
  * 
  * Reusable button component with multiple variants and sizes
  * Built with accessibility and performance in mind
+ * Supports navigation via href prop or onClick handler
  */
 
 import React from 'react';
+import Link from 'next/link';
 import { ButtonProps } from '@/types';
 
 /**
@@ -21,8 +23,9 @@ export function Button({
   loading = false,
   onClick,
   type = 'button',
+  href,
   ...props
-}: ButtonProps) {
+}: ButtonProps & { href?: string }) {
   // Base classes for all buttons
   const baseClasses = `
     inline-flex items-center justify-center
@@ -39,11 +42,14 @@ export function Button({
       bg-blue-600 text-white
       hover:bg-blue-700 focus:ring-blue-500
       border border-transparent
+      dark:bg-blue-500 dark:hover:bg-blue-600
     `,
     secondary: `
       bg-gray-100 text-gray-900
       hover:bg-gray-200 focus:ring-gray-500
       border border-gray-300
+      dark:bg-gray-800 dark:text-gray-100
+      dark:hover:bg-gray-700 dark:border-gray-600
     `,
     destructive: `
       bg-red-600 text-white
@@ -54,11 +60,14 @@ export function Button({
       bg-transparent text-gray-700
       hover:bg-gray-50 focus:ring-gray-500
       border border-gray-300
+      dark:text-gray-300 dark:hover:bg-gray-800
+      dark:border-gray-600
     `,
     ghost: `
       bg-transparent text-gray-700
       hover:bg-gray-100 focus:ring-gray-500
       border border-transparent
+      dark:text-gray-300 dark:hover:bg-gray-800
     `,
   };
 
@@ -76,14 +85,8 @@ export function Button({
     ${className}
   `.trim().replace(/\s+/g, ' ');
 
-  return (
-    <button
-      type={type}
-      className={classes}
-      disabled={disabled || loading}
-      onClick={onClick}
-      {...props}
-    >
+  const buttonContent = (
+    <>
       {loading && (
         <svg
           className="animate-spin -ml-1 mr-2 h-4 w-4"
@@ -108,6 +111,32 @@ export function Button({
         </svg>
       )}
       {children}
+    </>
+  );
+
+  // If href is provided, render as Link
+  if (href) {
+    return (
+      <Link
+        href={href}
+        className={classes}
+        {...props}
+      >
+        {buttonContent}
+      </Link>
+    );
+  }
+
+  // Otherwise render as button
+  return (
+    <button
+      type={type}
+      className={classes}
+      disabled={disabled || loading}
+      onClick={onClick}
+      {...props}
+    >
+      {buttonContent}
     </button>
   );
 }

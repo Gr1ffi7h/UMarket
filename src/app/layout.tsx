@@ -3,11 +3,13 @@
  * 
  * Main layout wrapper for the UMarket application
  * Server component - optimized for performance and SEO
+ * Updated with AppWrapper for dark mode support
  */
 
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import '../styles/globals.css';
+import { AppWrapper } from '@/components/AppWrapper';
 
 // Optimize font loading
 const inter = Inter({
@@ -66,6 +68,7 @@ export const metadata: Metadata = {
 /**
  * Root layout component
  * Wraps all pages with consistent HTML structure and styling
+ * Includes AppWrapper for dark mode functionality
  */
 export default function RootLayout({
   children,
@@ -107,10 +110,13 @@ export default function RootLayout({
           Skip to main content
         </a>
         
-        {/* Main content wrapper */}
-        <div id="main-content" className="relative">
-          {children}
-        </div>
+        {/* App Wrapper for theme provider */}
+        <AppWrapper>
+          {/* Main content wrapper */}
+          <div id="main-content" className="relative">
+            {children}
+          </div>
+        </AppWrapper>
         
         {/* Footer or global components can go here */}
       </body>

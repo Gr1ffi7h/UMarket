@@ -8,6 +8,7 @@ import type { Config } from "tailwindcss";
  * - Next.js App Router
  * - TypeScript support
  * - Production performance
+ * - Light/Dark mode support
  */
 const config: Config = {
   content: [
@@ -15,6 +16,7 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
