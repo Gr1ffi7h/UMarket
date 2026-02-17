@@ -1,0 +1,9 @@
+/**
+ * Global CSS Styles
+ * 
+ * Base styles for UMarket application
+ * Optimized for performance and accessibility
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
