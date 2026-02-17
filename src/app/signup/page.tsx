@@ -106,6 +106,7 @@ export default function SignUpPage() {
       // Redirect to dashboard on success
       window.location.href = '/dashboard';
     } catch (error) {
+      console.error('Registration error:', error);
       setErrors({ submit: 'Registration failed. Please try again.' });
     } finally {
       setIsSubmitting(false);
