@@ -261,7 +261,7 @@ export default function BrowsePage() {
                       {item.postedAt}
                     </span>
                     <Button
-                      href={`/item/${item.id}`}
+                      href={`/listing/${item.id}`}
                       variant="outline"
                       size="sm"
                     >
