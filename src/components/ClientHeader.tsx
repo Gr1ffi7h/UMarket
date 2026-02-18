@@ -36,7 +36,7 @@ export function ClientHeader() {
           </div>
           
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
+          <nav className="hidden lg:flex items-center space-x-4">
             <Button 
               href="/browse" 
               variant="ghost" 
@@ -44,6 +44,30 @@ export function ClientHeader() {
               className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
             >
               Browse
+            </Button>
+            <Button 
+              href="/create-listing" 
+              variant="ghost" 
+              size="sm"
+              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+            >
+              Create Listing
+            </Button>
+            <Button 
+              href="/messages" 
+              variant="ghost" 
+              size="sm"
+              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+            >
+              Messages
+            </Button>
+            <Button 
+              href="/edit-profile" 
+              variant="ghost" 
+              size="sm"
+              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+            >
+              Profile
             </Button>
             <Button 
               href="/login" 
@@ -57,7 +81,7 @@ export function ClientHeader() {
           </nav>
 
           {/* Mobile Navigation */}
-          <div className="md:hidden flex items-center space-x-2">
+          <div className="lg:hidden flex items-center space-x-2">
             <ThemeToggle />
             <Button
               href="/login"
