@@ -1,22 +1,30 @@
 /**
- * Header Component
+ * Client Header Component
  * 
- * Modern navigation header with enhanced theme toggle
- * Client component for interactive functionality
- * Features improved accessibility and mobile responsiveness
+ * Client-side wrapper for header functionality
+ * Ensures proper hydration for interactive elements
+ * Uses dynamic imports to avoid SSR issues
  */
 
 'use client';
 
 import React from 'react';
+import dynamic from 'next/dynamic';
 import { Button } from '@/components/Button';
-import { ThemeToggle } from '@/components/ThemeToggle';
+
+// Dynamically import ThemeToggle to avoid SSR issues
+const ThemeToggle = dynamic(() => import('@/components/ThemeToggle').then(mod => ({ default: mod.ThemeToggle })), {
+  ssr: false,
+  loading: () => (
+    <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+  ),
+});
 
 /**
  * Header component with navigation and theme toggle
  * Enhanced with modern styling and better mobile experience
  */
-export function Header() {
+export function ClientHeader() {
   return (
     <header className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-gray-200/50 dark:border-gray-800/50 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

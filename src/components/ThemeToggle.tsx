@@ -1,9 +1,9 @@
 /**
  * Theme Toggle Component
  * 
- * Button to switch between light and dark themes
- * Accessible with proper ARIA labels and keyboard navigation
- * Shows current theme state with appropriate icons
+ * Modern, accessible theme toggle button for light/dark mode switching
+ * Features smooth animations and proper ARIA labels
+ * Fully functional with ThemeProvider context
  */
 
 'use client';
@@ -12,30 +12,54 @@ import React from 'react';
 import { useTheme } from './ThemeProvider';
 
 /**
- * Theme Toggle Button
- * 
- * Provides a button to toggle between light and dark themes
- * Uses sun/moon icons to indicate current state
- * Fully accessible with keyboard navigation support
+ * Theme toggle button with sun/moon icons
+ * Provides visual feedback for current theme state
  */
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+
+  // Prevent hydration mismatch
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <button
+        className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 w-10 h-10"
+        aria-label="Loading theme toggle"
+        disabled
+      />
+    );
+  }
+
+  const isDark = theme === 'dark';
 
   return (
     <button
       type="button"
       onClick={toggleTheme}
-      className="relative inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-900"
-      aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-      title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+      className={`
+        relative p-2 rounded-lg transition-all duration-300 ease-in-out
+        bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700
+        border border-gray-300 dark:border-gray-600
+        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+        dark:focus:ring-offset-gray-900
+        w-10 h-10 flex items-center justify-center
+        group
+      `}
+      aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+      title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
     >
       <span className="sr-only">Toggle theme</span>
       
       {/* Sun icon for light mode */}
       <svg
-        className={`h-5 w-5 transition-all duration-200 ${
-          theme === 'light' ? 'opacity-100 scale-100' : 'opacity-0 scale-0 absolute'
-        }`}
+        className={`
+          h-5 w-5 text-yellow-600 dark:text-yellow-500 transition-all duration-300 ease-in-out
+          ${isDark ? 'opacity-0 scale-0 rotate-180 absolute' : 'opacity-100 scale-100 rotate-0'}
+        `}
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
@@ -52,9 +76,10 @@ export function ThemeToggle() {
       
       {/* Moon icon for dark mode */}
       <svg
-        className={`h-5 w-5 transition-all duration-200 ${
-          theme === 'dark' ? 'opacity-100 scale-100' : 'opacity-0 scale-0 absolute'
-        }`}
+        className={`
+          h-5 w-5 text-blue-600 dark:text-blue-400 transition-all duration-300 ease-in-out
+          ${isDark ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-0 -rotate-180 absolute'}
+        `}
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
@@ -69,8 +94,8 @@ export function ThemeToggle() {
         />
       </svg>
       
-      {/* Placeholder to maintain button size */}
-      <div className="h-5 w-5" />
+      {/* Subtle hover effect */}
+      <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-transparent via-white/20 to-transparent dark:via-white/10 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
     </button>
   );
 }

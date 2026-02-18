@@ -4,6 +4,7 @@
  * Registration page with .edu email validation
  * Client-side form validation and error handling
  * Responsive design with accessibility features
+ * Uses dynamic rendering to avoid SSR issues with theme context
  */
 
 'use client';
@@ -35,6 +36,11 @@ export default function SignUpPage() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   /**
    * Handle form input changes
@@ -112,6 +118,21 @@ export default function SignUpPage() {
       setIsSubmitting(false);
     }
   };
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
+          <div className="text-center">
+            <div className="animate-pulse">
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-48 mx-auto mb-4"></div>
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-64 mx-auto"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">

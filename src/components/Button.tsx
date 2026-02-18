@@ -1,9 +1,10 @@
 /**
  * Button Component
  * 
- * Reusable button component with multiple variants and sizes
- * Built with accessibility and performance in mind
+ * Enhanced reusable button component with multiple variants and sizes
+ * Built with accessibility, performance, and dark mode support in mind
  * Supports navigation via href prop or onClick handler
+ * Optimized for college student user experience
  */
 
 import React from 'react';
@@ -11,8 +12,9 @@ import Link from 'next/link';
 import { ButtonProps } from '@/types';
 
 /**
- * Button component with consistent styling and behavior
+ * Button component with consistent styling and enhanced behavior
  * Server-safe component - no client-side only hooks
+ * Features improved hover states and accessibility
  */
 export function Button({
   children,
@@ -26,56 +28,64 @@ export function Button({
   href,
   ...props
 }: ButtonProps & { href?: string }) {
-  // Base classes for all buttons
+  // Base classes for all buttons with enhanced transitions
   const baseClasses = `
     inline-flex items-center justify-center
-    font-medium rounded-md
-    transition-all duration-200
+    font-medium rounded-lg
+    transition-all duration-200 ease-in-out
     focus:outline-none focus:ring-2 focus:ring-offset-2
-    disabled:opacity-50 disabled:cursor-not-allowed
+    disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
     ${loading ? 'cursor-wait' : ''}
+    active:scale-95
   `;
 
-  // Variant-specific classes
+  // Enhanced variant-specific classes with dark mode support
   const variantClasses = {
     primary: `
-      bg-blue-600 text-white
+      bg-blue-600 text-white shadow-md hover:shadow-lg
       hover:bg-blue-700 focus:ring-blue-500
       border border-transparent
       dark:bg-blue-500 dark:hover:bg-blue-600
+      dark:focus:ring-blue-400 dark:shadow-blue-900/20
+      transform hover:-translate-y-0.5
     `,
     secondary: `
-      bg-gray-100 text-gray-900
+      bg-gray-100 text-gray-900 shadow-sm hover:shadow-md
       hover:bg-gray-200 focus:ring-gray-500
       border border-gray-300
-      dark:bg-gray-800 dark:text-gray-100
-      dark:hover:bg-gray-700 dark:border-gray-600
+      dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600
+      dark:hover:bg-gray-700 dark:focus:ring-gray-400
+      dark:shadow-gray-900/20
     `,
     destructive: `
-      bg-red-600 text-white
+      bg-red-600 text-white shadow-md hover:shadow-lg
       hover:bg-red-700 focus:ring-red-500
       border border-transparent
+      dark:bg-red-700 dark:hover:bg-red-800
+      transform hover:-translate-y-0.5
     `,
     outline: `
-      bg-transparent text-gray-700
+      bg-transparent text-gray-700 shadow-sm hover:shadow-md
       hover:bg-gray-50 focus:ring-gray-500
-      border border-gray-300
+      border-2 border-gray-300
       dark:text-gray-300 dark:hover:bg-gray-800
-      dark:border-gray-600
+      dark:border-gray-600 dark:focus:ring-gray-400
+      dark:shadow-gray-900/10
     `,
     ghost: `
       bg-transparent text-gray-700
       hover:bg-gray-100 focus:ring-gray-500
       border border-transparent
       dark:text-gray-300 dark:hover:bg-gray-800
+      dark:focus:ring-gray-400
     `,
   };
 
-  // Size-specific classes
+  // Enhanced size-specific classes with better padding
   const sizeClasses = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg',
+    sm: 'px-4 py-2 text-sm',
+    md: 'px-6 py-3 text-base',
+    lg: 'px-8 py-4 text-lg',
   };
 
   const classes = `
@@ -89,7 +99,7 @@ export function Button({
     <>
       {loading && (
         <svg
-          className="animate-spin -ml-1 mr-2 h-4 w-4"
+          className="animate-spin -ml-1 mr-2 h-5 w-5"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -114,7 +124,7 @@ export function Button({
     </>
   );
 
-  // If href is provided, render as Link
+  // If href is provided, render as Link with enhanced styling
   if (href) {
     return (
       <Link
@@ -127,7 +137,7 @@ export function Button({
     );
   }
 
-  // Otherwise render as button
+  // Otherwise render as button with enhanced attributes
   return (
     <button
       type={type}
