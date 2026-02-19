@@ -8,58 +8,11 @@
 
 import { Button } from '@/components/Button';
 import { ClientHeader } from '@/components/ClientHeader';
+import { getFeaturedListings } from '@/lib/featured-listing';
 
-// Mock featured listings data
-const featuredListings = [
-  {
-    id: '1',
-    title: 'MacBook Pro 14"',
-    price: 1200,
-    category: 'Electronics',
-    condition: 'Like New',
-    image: '/api/placeholder/200/150',
-  },
-  {
-    id: '2',
-    title: 'Calculus Textbook',
-    price: 45,
-    category: 'Books',
-    condition: 'Good',
-    image: '/api/placeholder/200/150',
-  },
-  {
-    id: '3',
-    title: 'Desk Lamp',
-    price: 25,
-    category: 'Furniture',
-    condition: 'Good',
-    image: '/api/placeholder/200/150',
-  },
-  {
-    id: '4',
-    title: 'Nike Running Shoes',
-    price: 60,
-    category: 'Clothing',
-    condition: 'Fair',
-    image: '/api/placeholder/200/150',
-  },
-  {
-    id: '5',
-    title: 'Coffee Maker',
-    price: 35,
-    category: 'Appliances',
-    condition: 'New',
-    image: '/api/placeholder/200/150',
-  },
-  {
-    id: '6',
-    title: 'Gaming Mouse',
-    price: 40,
-    category: 'Electronics',
-    condition: 'Like New',
-    image: '/api/placeholder/200/150',
-  },
-];
+// Get featured listings using deterministic hourly algorithm
+// This ensures the same listings appear during the same hour globally
+const featuredListings = getFeaturedListings(6);
 
 /**
  * Compact Hero Section
@@ -159,9 +112,15 @@ function HowItWorks() {
  * Featured Listings Preview
  * 
  * 4-6 listing cards in compact grid
+ * Uses deterministic hourly algorithm for selection
  * Clean card styling with minimal information
  */
 function FeaturedListings() {
+  // Edge case: No listings available
+  if (featuredListings.length === 0) {
+    return null;
+  }
+
   return (
     <section className="py-8 px-4 bg-gray-50 dark:bg-gray-800">
       <div className="max-w-4xl mx-auto">
@@ -174,7 +133,7 @@ function FeaturedListings() {
           </Button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {featuredListings.slice(0, 6).map(listing => (
+          {featuredListings.map(listing => (
             <div key={listing.id} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded p-3">
               <div className="w-full h-24 bg-gray-200 dark:bg-gray-700 rounded mb-3 flex items-center justify-center">
                 <span className="text-xs text-gray-400 dark:text-gray-500">No Image</span>

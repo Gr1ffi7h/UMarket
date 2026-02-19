@@ -11,76 +11,10 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/Button';
 import { ClientHeader } from '@/components/ClientHeader';
+import { getAllActiveListings } from '@/lib/featured-listing';
 
-// Mock data for marketplace items
-const mockItems = [
-  {
-    id: '1',
-    title: 'MacBook Pro 14"',
-    price: 1200,
-    category: 'Electronics',
-    condition: 'Like New',
-    image: '/api/placeholder/200/150',
-    description: 'Excellent condition MacBook Pro, barely used.',
-    seller: 'john.doe@university.edu',
-    postedAt: '2024-01-15',
-  },
-  {
-    id: '2',
-    title: 'Calculus Textbook',
-    price: 45,
-    category: 'Books',
-    condition: 'Good',
-    image: '/api/placeholder/200/150',
-    description: 'Calculus: Early Transcendentals, 8th Edition.',
-    seller: 'jane.smith@university.edu',
-    postedAt: '2024-01-14',
-  },
-  {
-    id: '3',
-    title: 'Desk Lamp',
-    price: 25,
-    category: 'Furniture',
-    condition: 'Good',
-    image: '/api/placeholder/200/150',
-    description: 'LED desk lamp with adjustable brightness.',
-    seller: 'mike.wilson@university.edu',
-    postedAt: '2024-01-13',
-  },
-  {
-    id: '4',
-    title: 'Nike Running Shoes',
-    price: 60,
-    category: 'Clothing',
-    condition: 'Fair',
-    image: '/api/placeholder/200/150',
-    description: 'Size 10 Nike running shoes, worn a few times.',
-    seller: 'sarah.jones@university.edu',
-    postedAt: '2024-01-12',
-  },
-  {
-    id: '5',
-    title: 'Coffee Maker',
-    price: 35,
-    category: 'Appliances',
-    condition: 'New',
-    image: '/api/placeholder/200/150',
-    description: 'Brand new coffee maker, still in box.',
-    seller: 'alex.brown@university.edu',
-    postedAt: '2024-01-11',
-  },
-  {
-    id: '6',
-    title: 'Gaming Mouse',
-    price: 40,
-    category: 'Electronics',
-    condition: 'Like New',
-    image: '/api/placeholder/200/150',
-    description: 'RGB gaming mouse, barely used.',
-    seller: 'chris.davis@university.edu',
-    postedAt: '2024-01-10',
-  },
-];
+// Get all active listings from centralized data source
+const mockItems = getAllActiveListings();
 
 const categories = ['All', 'Electronics', 'Books', 'Furniture', 'Clothing', 'Appliances'];
 const conditions = ['All', 'New', 'Like New', 'Good', 'Fair'];
