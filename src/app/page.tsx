@@ -1,22 +1,75 @@
 /**
- * Minimal Landing Page
+ * Enhanced Landing Page
  * 
- * Clean, compact landing page with reduced visual bulk
- * Focus on essential information and clear calls-to-action
- * Lightweight design optimized for fast loading
+ * Structured content density while maintaining minimal aesthetic
+ * Clean sections with intentional content placement
+ * Modern, lightweight design optimized for engagement
  */
 
 import { Button } from '@/components/Button';
 import { ClientHeader } from '@/components/ClientHeader';
 
+// Mock featured listings data
+const featuredListings = [
+  {
+    id: '1',
+    title: 'MacBook Pro 14"',
+    price: 1200,
+    category: 'Electronics',
+    condition: 'Like New',
+    image: '/api/placeholder/200/150',
+  },
+  {
+    id: '2',
+    title: 'Calculus Textbook',
+    price: 45,
+    category: 'Books',
+    condition: 'Good',
+    image: '/api/placeholder/200/150',
+  },
+  {
+    id: '3',
+    title: 'Desk Lamp',
+    price: 25,
+    category: 'Furniture',
+    condition: 'Good',
+    image: '/api/placeholder/200/150',
+  },
+  {
+    id: '4',
+    title: 'Nike Running Shoes',
+    price: 60,
+    category: 'Clothing',
+    condition: 'Fair',
+    image: '/api/placeholder/200/150',
+  },
+  {
+    id: '5',
+    title: 'Coffee Maker',
+    price: 35,
+    category: 'Appliances',
+    condition: 'New',
+    image: '/api/placeholder/200/150',
+  },
+  {
+    id: '6',
+    title: 'Gaming Mouse',
+    price: 40,
+    category: 'Electronics',
+    condition: 'Like New',
+    image: '/api/placeholder/200/150',
+  },
+];
+
 /**
- * Minimal Hero Section
+ * Compact Hero Section
  * 
- * Compact hero with essential messaging only
+ * Clear value proposition with subtle CTAs
+ * Clean alignment without oversized typography
  */
-function MinimalHero() {
+function CompactHero() {
   return (
-    <section className="py-8 px-4">
+    <section className="py-8 px-4 bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-900">
       <div className="max-w-4xl mx-auto text-center">
         <h1 className="text-2xl font-medium text-gray-900 dark:text-white mb-3">
           Campus Marketplace
@@ -38,60 +91,61 @@ function MinimalHero() {
 }
 
 /**
- * Minimal Stats Section
+ * How It Works Section
  * 
- * Subtle stats display with reduced visual prominence
+ * 3 simple steps with minimal icons
+ * Tight spacing and clean presentation
  */
-function MinimalStats() {
-  return (
-    <section className="py-6 px-4 bg-gray-50 dark:bg-gray-800">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-center gap-8 text-center">
-          <div>
-            <div className="text-lg font-medium text-blue-600 dark:text-blue-400">
-              1,000+
-            </div>
-            <div className="text-xs text-gray-600 dark:text-gray-300">
-              Active Students
-            </div>
-          </div>
-          <div>
-            <div className="text-lg font-medium text-blue-600 dark:text-blue-400">
-              99.9%
-            </div>
-            <div className="text-xs text-gray-600 dark:text-gray-300">
-              Uptime
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/**
- * Minimal Features Section
- * 
- * Compact feature list with clean presentation
- */
-function MinimalFeatures() {
-  const features = [
-    { title: 'Student Verified', description: '.edu email required' },
-    { title: 'Campus Local', description: 'Meet on campus' },
-    { title: 'Safe Trading', description: 'Verified users only' },
+function HowItWorks() {
+  const steps = [
+    { 
+      title: 'Post', 
+      description: 'List your items in seconds',
+      icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        </svg>
+      )
+    },
+    { 
+      title: 'Browse', 
+      description: 'Find what you need locally',
+      icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      )
+    },
+    { 
+      title: 'Connect', 
+      description: 'Meet and exchange safely',
+      icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      )
+    },
   ];
 
   return (
-    <section className="py-8 px-4">
+    <section className="py-8 px-4 bg-white dark:bg-gray-900">
       <div className="max-w-4xl mx-auto">
+        <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-6 text-center">
+          How It Works
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {features.map((feature, index) => (
+          {steps.map((step, index) => (
             <div key={index} className="text-center">
+              <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                <div className="text-blue-600 dark:text-blue-400">
+                  {step.icon}
+                </div>
+              </div>
               <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">
-                {feature.title}
+                {step.title}
               </h3>
               <p className="text-xs text-gray-600 dark:text-gray-300">
-                {feature.description}
+                {step.description}
               </p>
             </div>
           ))}
@@ -102,21 +156,162 @@ function MinimalFeatures() {
 }
 
 /**
- * Minimal Landing Page
+ * Featured Listings Preview
  * 
- * Main landing page component with clean, lightweight design
- * Removes bulk and focuses on essential information
+ * 4-6 listing cards in compact grid
+ * Clean card styling with minimal information
  */
-export default function MinimalLandingPage() {
+function FeaturedListings() {
+  return (
+    <section className="py-8 px-4 bg-gray-50 dark:bg-gray-800">
+      <div className="max-w-4xl mx-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-lg font-medium text-gray-900 dark:text-white">
+            Featured Listings
+          </h2>
+          <Button href="/browse" variant="outline" size="sm">
+            View All
+          </Button>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {featuredListings.slice(0, 6).map(listing => (
+            <div key={listing.id} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded p-3">
+              <div className="w-full h-24 bg-gray-200 dark:bg-gray-700 rounded mb-3 flex items-center justify-center">
+                <span className="text-xs text-gray-400 dark:text-gray-500">No Image</span>
+              </div>
+              <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1 truncate">
+                {listing.title}
+              </h3>
+              <p className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-2">
+                ${listing.price}
+              </p>
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-gray-600 dark:text-gray-300">
+                  {listing.category}
+                </span>
+                <span className="text-xs text-gray-600 dark:text-gray-300">
+                  {listing.condition}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Campus Focus Section
+ * 
+ * Short explanation about .edu verification
+ * Small trust indicators
+ */
+function CampusFocus() {
+  return (
+    <section className="py-8 px-4 bg-white dark:bg-gray-900">
+      <div className="max-w-4xl mx-auto text-center">
+        <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-3">
+          Campus-First Marketplace
+        </h2>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 max-w-md mx-auto">
+          Only verified students with .edu email addresses can participate. 
+          This ensures a safe, trusted environment for campus trading.
+        </p>
+        <div className="flex justify-center gap-6 text-xs text-gray-500 dark:text-gray-400">
+          <div className="flex items-center gap-1">
+            <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            <span>.edu Verification</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            <span>Campus Local</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            <span>Safe Trading</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Subtle Footer
+ * 
+ * Minimal links with small typography
+ * Clean spacing
+ */
+function MinimalFooter() {
+  return (
+    <footer className="py-6 px-4 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+      <div className="max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div>
+            <h3 className="text-xs font-medium text-gray-900 dark:text-white mb-2">
+              Marketplace
+            </h3>
+            <ul className="space-y-1">
+              <li><a href="/browse" className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">Browse</a></li>
+              <li><a href="/create-listing" className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">Sell</a></li>
+              <li><a href="/my-listings" className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">My Listings</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-xs font-medium text-gray-900 dark:text-white mb-2">
+              Account
+            </h3>
+            <ul className="space-y-1">
+              <li><a href="/profile" className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">Profile</a></li>
+              <li><a href="/messages" className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">Messages</a></li>
+              <li><a href="/profile/edit" className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">Settings</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-xs font-medium text-gray-900 dark:text-white mb-2">
+              About
+            </h3>
+            <ul className="space-y-1">
+              <li><a href="#" className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">Safety</a></li>
+              <li><a href="#" className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">Terms</a></li>
+              <li><a href="#" className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">Privacy</a></li>
+            </ul>
+          </div>
+        </div>
+        <div className="text-center text-xs text-gray-500 dark:text-gray-400">
+          © 2024 UMarket. Campus marketplace for students.
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+/**
+ * Enhanced Landing Page
+ * 
+ * Structured content density while maintaining minimal aesthetic
+ * Clean sections with intentional content placement
+ */
+export default function EnhancedLandingPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       <ClientHeader />
       
       <main>
-        <MinimalHero />
-        <MinimalStats />
-        <MinimalFeatures />
+        <CompactHero />
+        <HowItWorks />
+        <FeaturedListings />
+        <CampusFocus />
       </main>
+      
+      <MinimalFooter />
     </div>
   );
 }

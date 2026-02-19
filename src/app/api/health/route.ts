@@ -46,9 +46,7 @@ export async function GET(request: NextRequest) {
       },
     });
 
-  } catch (error) {
-    console.error('Health check error:', error);
-    
+  } catch {
     const errorResponse = createApiResponse(
       undefined,
       'Health check failed',

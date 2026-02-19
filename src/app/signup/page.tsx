@@ -109,10 +109,9 @@ export default function SignUpPage() {
       // Simulate API call - replace with actual registration logic
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Redirect to dashboard on success
-      window.location.href = '/dashboard';
-    } catch (error) {
-      console.error('Registration error:', error);
+      // Redirect to profile on success
+      window.location.href = '/profile';
+    } catch {
       setErrors({ submit: 'Registration failed. Please try again.' });
     } finally {
       setIsSubmitting(false);

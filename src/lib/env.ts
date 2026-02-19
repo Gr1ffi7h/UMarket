@@ -13,7 +13,6 @@ export function getEnvVar(key: string, fallback?: string): string {
   
   if (value === undefined) {
     if (fallback !== undefined) {
-      console.warn(`Environment variable ${key} not found, using fallback: ${fallback}`);
       return fallback;
     }
     

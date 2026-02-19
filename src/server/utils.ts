@@ -30,8 +30,6 @@ export function createApiResponse<T>(
  * Server-side only error handling
  */
 export function handleApiError(error: unknown): ApiResponse {
-  console.error('API Error:', error);
-  
   if (error instanceof Error) {
     return createApiResponse(undefined, error.message, 'Internal server error', 'error');
   }
@@ -82,13 +80,11 @@ export function getClientIp(request: Request): string {
 export async function checkRateLimit(
   identifier: string,
   limit: number = 100,
-  windowMs: number = 60000
+  _windowMs: number = 60000
 ): Promise<{ allowed: boolean; remaining: number }> {
   // This is a placeholder implementation
   // In a real application, you would use Redis or a database
   // to track rate limits across serverless function invocations
-  
-  console.log(`Rate limit check for ${identifier}: ${limit} requests per ${windowMs}ms`);
   
   return {
     allowed: true,
@@ -103,8 +99,7 @@ export async function checkRateLimit(
 export function safeJsonParse<T>(jsonString: string, fallback: T): T {
   try {
     return JSON.parse(jsonString) as T;
-  } catch (error) {
-    console.error('JSON parsing error:', error);
+  } catch {
     return fallback;
   }
 }
