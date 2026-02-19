@@ -1,9 +1,9 @@
 /**
- * View Messages Page Component
+ * Minimal Messages Page Component
  * 
- * Messaging dashboard for marketplace communications
- * Features conversation list and message interface
- * Responsive design with dark mode support
+ * Compact messaging interface with reduced visual bulk
+ * Clean layout with minimal spacing and elements
+ * Lightweight design optimized for fast messaging
  */
 
 'use client';
@@ -96,18 +96,16 @@ const mockMessages = [
 ];
 
 /**
- * View Messages Page Component
+ * Minimal Messages Page Component
  * 
- * Displays messaging interface with conversation list and chat view
- * Supports real-time messaging simulation
+ * Compact messaging interface with clean layout
+ * Reduced spacing and minimal visual elements
  */
-export default function ViewMessagesPage() {
+export default function MinimalMessagesPage() {
   const [selectedConversation, setSelectedConversation] = useState<string | null>('1');
   const [conversations, setConversations] = useState(mockConversations);
   const [messages, setMessages] = useState(mockMessages);
   const [newMessage, setNewMessage] = useState('');
-
-  const selectedConv = conversations.find(c => c.id === selectedConversation);
 
   /**
    * Format timestamp for display
@@ -147,7 +145,7 @@ export default function ViewMessagesPage() {
     // Update conversation's last message
     setConversations(prev => prev.map(conv => 
       conv.id === selectedConversation 
-        ? { ...conv, lastMessage: newMsg }
+        ? { ...conv, lastMessage: newMsg, unreadCount: 0 }
         : conv
     ));
   };
@@ -163,33 +161,25 @@ export default function ViewMessagesPage() {
     ));
   };
 
+  const selectedConv = conversations.find(c => c.id === selectedConversation);
+
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       <ClientHeader />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Messages
-          </h1>
-          <p className="text-gray-600 dark:text-gray-300">
-            Communicate with buyers and sellers
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-300px)]">
+      <main className="max-w-4xl mx-auto px-4 py-6 h-[calc(100vh-96px)]">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">
           {/* Conversations List */}
-          <div className="lg:col-span-1 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Conversations
+          <div className="lg:col-span-1 border-r border-gray-200 dark:border-gray-700">
+            <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-sm font-medium text-gray-900 dark:text-white">
+                Messages
               </h2>
             </div>
             
-            <div className="overflow-y-auto">
+            <div className="overflow-y-auto h-[calc(100vh-160px)]">
               {conversations.length > 0 ? (
-                <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                <div className="space-y-1">
                   {conversations.map(conversation => (
                     <div
                       key={conversation.id}
@@ -197,54 +187,50 @@ export default function ViewMessagesPage() {
                         setSelectedConversation(conversation.id);
                         markAsRead(conversation.id);
                       }}
-                      className={`p-4 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors ${
+                      className={`p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${
                         selectedConversation === conversation.id ? 'bg-blue-50 dark:bg-blue-900/20' : ''
                       }`}
                     >
                       <div className="flex items-start space-x-3">
-                        <div className="flex-shrink-0">
-                          <div className="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
-                            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                              {conversation.participant.name.charAt(0)}
-                            </span>
-                          </div>
+                        <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                            {conversation.participant.name.charAt(0)}
+                          </span>
                         </div>
-                        
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between">
-                            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                              {conversation.participant.name}
-                            </p>
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
-                              {formatTimestamp(conversation.lastMessage.timestamp)}
-                            </span>
-                          </div>
-                          
-                          <p className="text-sm text-gray-600 dark:text-gray-300 truncate">
-                            {conversation.item.title}
+                          <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                            {conversation.participant.name}
                           </p>
-                          
-                          <div className="flex items-center justify-between mt-1">
-                            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                              {conversation.lastMessage.content}
-                            </p>
-                            {conversation.unreadCount > 0 && (
-                              <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-blue-600 rounded-full">
-                                {conversation.unreadCount}
-                              </span>
-                            )}
-                          </div>
+                          <p className="text-xs text-gray-600 dark:text-gray-300 truncate">
+                            {conversation.participant.email}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-between items-center mt-1">
+                        <p className="text-xs text-gray-600 dark:text-gray-300 truncate">
+                          {conversation.lastMessage.content}
+                        </p>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                            {formatTimestamp(conversation.lastMessage.timestamp)}
+                          </span>
+                          {conversation.unreadCount > 0 && (
+                            <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-600 text-white">
+                              {conversation.unreadCount}
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="p-8 text-center">
-                  <div className="text-gray-400 dark:text-gray-500 mb-2">
+                <div className="text-center py-8">
+                  <div className="text-gray-400 dark:text-gray-500 text-sm mb-2">
                     No conversations yet
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                  <p className="text-xs text-gray-600 dark:text-gray-300">
                     Start messaging buyers and sellers from your listings
                   </p>
                 </div>
@@ -253,53 +239,52 @@ export default function ViewMessagesPage() {
           </div>
 
           {/* Message View */}
-          <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
+          <div className="lg:col-span-2 flex flex-col">
             {selectedConv ? (
               <>
                 {/* Conversation Header */}
-                <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
-                      <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                        {selectedConv.participant.name.charAt(0)}
-                      </span>
+                <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
+                        <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                          {selectedConv.participant.name.charAt(0)}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">
+                          {selectedConv.participant.name}
+                        </p>
+                        <p className="text-xs text-gray-600 dark:text-gray-300">
+                          {selectedConv.participant.email}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-lg font-medium text-gray-900 dark:text-white">
-                        {selectedConv.participant.name}
-                      </p>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">
-                        {selectedConv.participant.email}
-                      </p>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      {selectedConv.item.title} • ${selectedConv.item.price}
                     </div>
-                  </div>
-                  <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">
-                      Re: {selectedConv.item.title}
-                    </p>
-                    <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                      ${selectedConv.item.price}
-                    </p>
                   </div>
                 </div>
 
                 {/* Messages */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                <div className="flex-1 overflow-y-auto p-4 space-y-3">
                   {messages.map(message => (
                     <div
                       key={message.id}
                       className={`flex ${message.isFromMe ? 'justify-end' : 'justify-start'}`}
                     >
                       <div
-                        className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                        className={`max-w-xs lg:max-w-md px-3 py-2 rounded text-sm ${
                           message.isFromMe
                             ? 'bg-blue-600 text-white'
-                            : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
+                            : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
                         }`}
                       >
                         <p className="text-sm">{message.content}</p>
                         <p className={`text-xs mt-1 ${
-                          message.isFromMe ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'
+                          message.isFromMe
+                            ? 'text-blue-100'
+                            : 'text-gray-500 dark:text-gray-400'
                         }`}>
                           {formatTimestamp(message.timestamp)}
                         </p>
@@ -309,14 +294,14 @@ export default function ViewMessagesPage() {
                 </div>
 
                 {/* Message Input */}
-                <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-                  <form onSubmit={handleSendMessage} className="flex space-x-2">
+                <div className="p-3 border-t border-gray-200 dark:border-gray-700">
+                  <form onSubmit={handleSendMessage} className="flex gap-2">
                     <input
                       type="text"
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       placeholder="Type your message..."
-                      className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                      className="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
                     />
                     <Button
                       type="submit"
@@ -332,10 +317,10 @@ export default function ViewMessagesPage() {
             ) : (
               <div className="flex-1 flex items-center justify-center">
                 <div className="text-center">
-                  <div className="text-gray-400 dark:text-gray-500 mb-2">
-                    Select a conversation to start messaging
+                  <div className="text-gray-400 dark:text-gray-500 text-sm mb-2">
+                    Select a conversation
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                  <p className="text-xs text-gray-600 dark:text-gray-300">
                     Choose from your conversations on the left
                   </p>
                 </div>

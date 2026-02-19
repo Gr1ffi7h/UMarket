@@ -46,11 +46,9 @@ const mockListings = [
     price: 25,
     category: 'Furniture',
     condition: 'Good',
-    image: '/api/placeholder/300/200',
-    description: 'LED desk lamp with adjustable brightness.',
     status: 'sold',
     views: 67,
-    inquiries: 8,
+    inquiries: 1,
     postedAt: '2024-01-13',
   },
   {
@@ -59,12 +57,10 @@ const mockListings = [
     price: 60,
     category: 'Clothing',
     condition: 'Fair',
-    image: '/api/placeholder/300/200',
-    description: 'Size 10 Nike running shoes, worn a few times.',
     status: 'active',
+    postedAt: '2024-01-12',
     views: 12,
     inquiries: 1,
-    postedAt: '2024-01-12',
   },
   {
     id: '5',
@@ -72,12 +68,10 @@ const mockListings = [
     price: 35,
     category: 'Appliances',
     condition: 'New',
-    image: '/api/placeholder/300/200',
-    description: 'Brand new coffee maker, still in box.',
     status: 'active',
+    postedAt: '2024-01-11',
     views: 34,
     inquiries: 4,
-    postedAt: '2024-01-11',
   },
   {
     id: '6',
@@ -85,36 +79,33 @@ const mockListings = [
     price: 40,
     category: 'Electronics',
     condition: 'Like New',
-    image: '/api/placeholder/300/200',
-    description: 'RGB gaming mouse, barely used.',
     status: 'pending',
+    postedAt: '2024-01-10',
     views: 8,
     inquiries: 0,
-    postedAt: '2024-01-10',
   },
 ];
 
-const statusColors = {
-  active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-  sold: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
-  pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-};
+const categories = ['All', 'Electronics', 'Books', 'Furniture', 'Clothing', 'Appliances'];
+const statuses = ['All', 'Active', 'Sold', 'Draft'];
 
 /**
- * My Listings Page Component
+ * Minimal My Listings Page Component
  * 
- * Displays user's listings with management options
- * Includes filtering, sorting, and listing actions
+ * Displays user's listings with compact layout
+ * Reduced spacing and minimal visual elements
  */
-export default function MyListingsPage() {
+export default function MinimalMyListingsPage() {
   const [listings, setListings] = useState(mockListings);
-  const [filter, setFilter] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedStatus, setSelectedStatus] = useState('All');
   const [sortBy, setSortBy] = useState('newest');
 
-  // Filter listings based on status
+  // Filter listings based on filters
   const filteredListings = listings.filter(listing => {
-    if (filter === 'all') return true;
-    return listing.status === filter;
+    const matchesCategory = selectedCategory === 'All' || listing.category === selectedCategory;
+    const matchesStatus = selectedStatus === 'All' || listing.status.toLowerCase() === selectedStatus.toLowerCase();
+    return matchesCategory && matchesStatus;
   });
 
   // Sort listings
@@ -138,7 +129,7 @@ export default function MyListingsPage() {
   /**
    * Handle listing deletion
    */
-  const handleDelete = (listingId: string) => {
+  const handleDeleteListing = (listingId: string) => {
     if (confirm('Are you sure you want to delete this listing?')) {
       setListings(prev => prev.filter(listing => listing.id !== listingId));
     }
@@ -149,7 +140,9 @@ export default function MyListingsPage() {
    */
   const handleStatusChange = (listingId: string, newStatus: string) => {
     setListings(prev => prev.map(listing => 
-      listing.id === listingId ? { ...listing, status: newStatus } : listing
+      listing.id === listingId 
+        ? { ...listing, status: newStatus }
+        : listing
     ));
   };
 
@@ -157,165 +150,147 @@ export default function MyListingsPage() {
     <div className="min-h-screen bg-white dark:bg-gray-900">
       <ClientHeader />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-4xl mx-auto px-4 py-6">
         {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            My Listings
-          </h1>
-          <p className="text-gray-600 dark:text-gray-300">
-            Manage your marketplace listings
+        <div className="mb-6 flex justify-between items-center">
+          <div>
+            <h1 className="text-xl font-medium text-gray-900 dark:text-white mb-2">
+              My Listings
+            </h1>
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              Manage your marketplace listings
+            </p>
+          </div>
+          <Button href="/create-listing" variant="primary" size="sm">
+            Create Listing
+          </Button>
+        </div>
+
+        {/* Filters */}
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {/* Category Filter */}
+            <div>
+              <label htmlFor="category" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Category
+              </label>
+              <select
+                id="category"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              >
+                {categories.map(category => (
+                  <option key={category} value={category}>{category}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Status Filter */}
+            <div>
+              <label htmlFor="status" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Status
+              </label>
+              <select
+                id="status"
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              >
+                {statuses.map(status => (
+                  <option key={status} value={status}>{status}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Sort */}
+            <div>
+              <label htmlFor="sort" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Sort
+              </label>
+              <select
+                id="sort"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              >
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+                <option value="price-low">Price: Low</option>
+                <option value="price-high">Price: High</option>
+                <option value="views">Most Views</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Results Count */}
+        <div className="mb-4">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            {sortedListings.length} {sortedListings.length === 1 ? 'listing' : 'listings'}
           </p>
-        </div>
-
-        {/* Stats Bar */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">
-              {listings.filter(l => l.status === 'active').length}
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-300">
-              Active
-            </div>
-          </div>
-          
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 text-center">
-            <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-1">
-              {listings.filter(l => l.status === 'sold').length}
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-300">
-              Sold
-            </div>
-          </div>
-          
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 text-center">
-            <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">
-              {listings.reduce((sum, l) => sum + l.views, 0)}
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-300">
-              Total Views
-            </div>
-          </div>
-          
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 text-center">
-            <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400 mb-1">
-              {listings.reduce((sum, l) => sum + l.inquiries, 0)}
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-300">
-              Inquiries
-            </div>
-          </div>
-        </div>
-
-        {/* Filters and Controls */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="flex flex-col sm:flex-row gap-4">
-              {/* Status Filter */}
-              <div>
-                <label htmlFor="status-filter" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Status
-                </label>
-                <select
-                  id="status-filter"
-                  value={filter}
-                  onChange={(e) => setFilter(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                >
-                  <option value="all">All Listings</option>
-                  <option value="active">Active</option>
-                  <option value="sold">Sold</option>
-                  <option value="pending">Pending</option>
-                </select>
-              </div>
-
-              {/* Sort */}
-              <div>
-                <label htmlFor="sort" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Sort By
-                </label>
-                <select
-                  id="sort"
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                >
-                  <option value="newest">Newest First</option>
-                  <option value="oldest">Oldest First</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="views">Most Viewed</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Create New Listing Button */}
-            <Button
-              href="/create-listing"
-              variant="primary"
-              size="sm"
-              className="w-full md:w-auto"
-            >
-              Create New Listing
-            </Button>
-          </div>
         </div>
 
         {/* Listings Grid */}
         {sortedListings.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="space-y-3">
             {sortedListings.map(listing => (
               <div
                 key={listing.id}
-                className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow duration-200"
+                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-4"
               >
-                {/* Image */}
-                <div className="aspect-w-16 aspect-h-12 bg-gray-200 dark:bg-gray-700 rounded-t-lg">
-                  <div className="w-full h-48 bg-gray-200 dark:bg-gray-700 rounded-t-lg flex items-center justify-center">
-                    <div className="text-gray-400 dark:text-gray-500 text-sm">
-                      No Image Available
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center flex-shrink-0">
+                        <span className="text-xs text-gray-400 dark:text-gray-500">
+                          No Image
+                        </span>
+                      </div>
+                      
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="text-sm font-medium text-gray-900 dark:text-white">
+                            {listing.title}
+                          </h3>
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                            listing.status === 'active' 
+                              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                              : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                          }`}>
+                            {listing.status}
+                          </span>
+                        </div>
+                        
+                        <div className="flex items-center space-x-4 mb-2">
+                          <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                            ${listing.price}
+                          </span>
+                          <span className="text-xs text-gray-600 dark:text-gray-300">
+                            {listing.category}
+                          </span>
+                          <span className="text-xs text-gray-600 dark:text-gray-300">
+                            {listing.condition}
+                          </span>
+                        </div>
+                        
+                        <div className="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400">
+                          <span>{listing.views} views</span>
+                          <span>{listing.inquiries} inquiries</span>
+                          <span>{listing.postedAt}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-                
-                {/* Content */}
-                <div className="p-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
-                      {listing.title}
-                    </h3>
-                    <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                      ${listing.price}
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                      {listing.category}
-                    </span>
-                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${statusColors[listing.status as keyof typeof statusColors]}`}>
-                      {listing.status}
-                    </span>
-                  </div>
-                  
-                  <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 line-clamp-2">
-                    {listing.description}
-                  </p>
-                  
-                  {/* Stats */}
-                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-3">
-                    <span>{listing.views} views</span>
-                    <span>{listing.inquiries} inquiries</span>
-                    <span>{listing.postedAt}</span>
-                  </div>
-                  
-                  {/* Action Buttons */}
-                  <div className="flex gap-2">
+
+                {/* Action Buttons */}
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center space-x-2">
                     <Button
                       href={`/listing/${listing.id}`}
                       variant="outline"
                       size="sm"
-                      className="flex-1"
                     >
                       View
                     </Button>
@@ -323,10 +298,12 @@ export default function MyListingsPage() {
                       href={`/create-listing?edit=${listing.id}`}
                       variant="outline"
                       size="sm"
-                      className="flex-1"
                     >
                       Edit
                     </Button>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
                     {listing.status === 'active' && (
                       <Button
                         variant="outline"
@@ -339,8 +316,8 @@ export default function MyListingsPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleDelete(listing.id)}
-                      className="text-red-600 hover:text-red-700 hover:border-red-300"
+                      onClick={() => handleDeleteListing(listing.id)}
+                      className="text-red-600 border-red-600 hover:bg-red-50 dark:text-red-400 dark:border-red-400 dark:hover:bg-red-900/20"
                     >
                       Delete
                     </Button>
@@ -351,18 +328,14 @@ export default function MyListingsPage() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <div className="text-gray-400 dark:text-gray-500 text-lg mb-4">
+            <div className="text-gray-400 dark:text-gray-500 text-sm mb-2">
               No listings found
             </div>
-            <p className="text-gray-600 dark:text-gray-300 mb-6">
-              {filter === 'all' ? 'You haven\'t created any listings yet.' : `No ${filter} listings found.`}
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+              Start by creating your first listing
             </p>
-            <Button
-              href="/create-listing"
-              variant="primary"
-              size="lg"
-            >
-              Create Your First Listing
+            <Button href="/create-listing" variant="primary" size="sm">
+              Create Listing
             </Button>
           </div>
         )}

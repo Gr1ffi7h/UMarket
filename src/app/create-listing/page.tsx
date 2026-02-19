@@ -1,9 +1,9 @@
 /**
- * Create Listing Page Component
+ * Minimal Create Listing Page Component
  * 
- * Form for users to create new marketplace listings
- * Includes image upload, category selection, and pricing
- * Responsive design with dark mode support
+ * Compact form with reduced visual bulk
+ * Clean layout with minimal spacing
+ * Lightweight design optimized for fast listing creation
  */
 
 'use client';
@@ -31,12 +31,12 @@ const conditions = [
 ];
 
 /**
- * Create Listing Page Component
+ * Minimal Create Listing Page Component
  * 
- * Provides form for creating new marketplace listings
- * Includes validation and image upload functionality
+ * Compact form for creating new marketplace listings
+ * Reduced spacing and minimal visual elements
  */
-export default function CreateListingPage() {
+export default function MinimalCreateListingPage() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -55,7 +55,6 @@ export default function CreateListingPage() {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Clear error for this field when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -138,13 +137,9 @@ export default function CreateListingPage() {
     setIsSubmitting(true);
 
     try {
-      // Simulate API call - replace with actual listing creation logic
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Redirect to browse page on success
       window.location.href = '/browse';
-    } catch (error) {
-      console.error('Listing creation error:', error);
+    } catch {
       setErrors({ submit: 'Failed to create listing. Please try again.' });
     } finally {
       setIsSubmitting(false);
@@ -155,28 +150,28 @@ export default function CreateListingPage() {
     <div className="min-h-screen bg-white dark:bg-gray-900">
       <ClientHeader />
       
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-4xl mx-auto px-4 py-6">
         {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Create New Listing
+        <div className="mb-6">
+          <h1 className="text-xl font-medium text-gray-900 dark:text-white mb-2">
+            Create Listing
           </h1>
-          <p className="text-gray-600 dark:text-gray-300">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
             List your item for fellow students to discover
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {/* Basic Information */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4">
+            <h2 className="text-sm font-medium text-gray-900 dark:text-white mb-3">
               Basic Information
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {/* Title */}
               <div className="md:col-span-2">
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label htmlFor="title" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Title *
                 </label>
                 <input
@@ -187,18 +182,18 @@ export default function CreateListingPage() {
                   placeholder="What are you selling?"
                   value={formData.title}
                   onChange={handleInputChange}
-                  className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                  className={`w-full px-3 py-1.5 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
                     errors.title ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
                 {errors.title && (
-                  <p className="mt-1 text-sm text-red-600">{errors.title}</p>
+                  <p className="mt-1 text-xs text-red-600">{errors.title}</p>
                 )}
               </div>
 
               {/* Price */}
               <div>
-                <label htmlFor="price" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label htmlFor="price" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Price ($) *
                 </label>
                 <input
@@ -212,18 +207,18 @@ export default function CreateListingPage() {
                   placeholder="0.00"
                   value={formData.price}
                   onChange={handleInputChange}
-                  className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                  className={`w-full px-3 py-1.5 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
                     errors.price ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
                 {errors.price && (
-                  <p className="mt-1 text-sm text-red-600">{errors.price}</p>
+                  <p className="mt-1 text-xs text-red-600">{errors.price}</p>
                 )}
               </div>
 
               {/* Category */}
               <div>
-                <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label htmlFor="category" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Category *
                 </label>
                 <select
@@ -232,7 +227,7 @@ export default function CreateListingPage() {
                   required
                   value={formData.category}
                   onChange={handleInputChange}
-                  className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                  className={`w-full px-3 py-1.5 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
                     errors.category ? 'border-red-500' : 'border-gray-300'
                   }`}
                 >
@@ -242,13 +237,13 @@ export default function CreateListingPage() {
                   ))}
                 </select>
                 {errors.category && (
-                  <p className="mt-1 text-sm text-red-600">{errors.category}</p>
+                  <p className="mt-1 text-xs text-red-600">{errors.category}</p>
                 )}
               </div>
 
               {/* Condition */}
               <div>
-                <label htmlFor="condition" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label htmlFor="condition" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Condition *
                 </label>
                 <select
@@ -257,7 +252,7 @@ export default function CreateListingPage() {
                   required
                   value={formData.condition}
                   onChange={handleInputChange}
-                  className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                  className={`w-full px-3 py-1.5 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
                     errors.condition ? 'border-red-500' : 'border-gray-300'
                   }`}
                 >
@@ -267,43 +262,43 @@ export default function CreateListingPage() {
                   ))}
                 </select>
                 {errors.condition && (
-                  <p className="mt-1 text-sm text-red-600">{errors.condition}</p>
+                  <p className="mt-1 text-xs text-red-600">{errors.condition}</p>
                 )}
               </div>
 
               {/* Description */}
               <div className="md:col-span-2">
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label htmlFor="description" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Description *
                 </label>
                 <textarea
                   id="description"
                   name="description"
-                  rows={4}
+                  rows={3}
                   required
                   placeholder="Describe your item in detail..."
                   value={formData.description}
                   onChange={handleInputChange}
-                  className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                  className={`w-full px-3 py-1.5 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
                     errors.description ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
                 {errors.description && (
-                  <p className="mt-1 text-sm text-red-600">{errors.description}</p>
+                  <p className="mt-1 text-xs text-red-600">{errors.description}</p>
                 )}
               </div>
             </div>
           </div>
 
           {/* Images */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4">
+            <h2 className="text-sm font-medium text-gray-900 dark:text-white mb-3">
               Images
             </h2>
             
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div>
-                <label htmlFor="images" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label htmlFor="images" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Upload Images * (Max 5)
                 </label>
                 <input
@@ -312,23 +307,23 @@ export default function CreateListingPage() {
                   multiple
                   accept="image/*"
                   onChange={handleImageChange}
-                  className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-200 ${
+                  className={`w-full px-3 py-1.5 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-200 ${
                     errors.images ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
                 {errors.images && (
-                  <p className="mt-1 text-sm text-red-600">{errors.images}</p>
+                  <p className="mt-1 text-xs text-red-600">{errors.images}</p>
                 )}
               </div>
 
               {/* Image Preview */}
               {images.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
                   {images.map((image, index) => (
                     <div key={index} className="relative group">
-                      <div className="aspect-w-1 aspect-h-1 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
-                        <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                          <span className="text-gray-400 dark:text-gray-500 text-xs">
+                      <div className="aspect-w-1 aspect-h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+                        <div className="w-full h-16 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center">
+                          <span className="text-xs text-gray-400 dark:text-gray-500">
                             Image {index + 1}
                           </span>
                         </div>
@@ -336,9 +331,9 @@ export default function CreateListingPage() {
                       <button
                         type="button"
                         onClick={() => removeImage(index)}
-                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       </button>
@@ -351,27 +346,27 @@ export default function CreateListingPage() {
 
           {/* Submit Error */}
           {errors.submit && (
-            <div className="rounded-md bg-red-50 dark:bg-red-900/50 p-4">
-              <p className="text-sm text-red-800 dark:text-red-200">{errors.submit}</p>
+            <div className="rounded bg-red-50 dark:bg-red-900/50 p-3">
+              <p className="text-xs text-red-800 dark:text-red-200">{errors.submit}</p>
             </div>
           )}
 
           {/* Submit Buttons */}
-          <div className="flex gap-4">
+          <div className="flex gap-3">
             <Button
               type="submit"
               variant="primary"
-              size="lg"
+              size="md"
               loading={isSubmitting}
               disabled={isSubmitting}
               className="flex-1"
             >
-              {isSubmitting ? 'Creating Listing...' : 'Create Listing'}
+              {isSubmitting ? 'Creating...' : 'Create Listing'}
             </Button>
             <Button
               type="button"
               variant="outline"
-              size="lg"
+              size="md"
               href="/browse"
               disabled={isSubmitting}
             >
