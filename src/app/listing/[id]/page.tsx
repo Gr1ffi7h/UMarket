@@ -77,6 +77,31 @@ export default function MinimalListingDetailsPage({ params }: { params: Promise<
     getParams();
   }, [params]);
 
+  const handleContactSeller = async () => {
+    try {
+      // Create conversation with seller
+      const response = await fetch('/api/conversations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          listingId: listing.id,
+          sellerId: listing.seller.email, // In real app, this would be seller.id
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.conversation) {
+        // Redirect to the conversation
+        window.location.href = `/messages/${data.conversation.id}`;
+      }
+    } catch (error) {
+      console.error('Error creating conversation:', error);
+    }
+  };
+
   // Handle loading state
   if (!listingId) {
     return (
@@ -267,7 +292,7 @@ export default function MinimalListingDetailsPage({ params }: { params: Promise<
               </div>
 
               <Button
-                href={`/messages?listing=${listing.id}`}
+                onClick={handleContactSeller}
                 variant="primary"
                 size="md"
                 className="w-full"

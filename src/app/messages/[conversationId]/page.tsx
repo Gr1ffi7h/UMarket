@@ -1,9 +1,9 @@
 /**
- * Messages Page Component
+ * Dynamic Conversation Page
  * 
- * Main messaging interface with conversation list and chat
- * Real-time updates with cross-device synchronization
- * Mobile-first responsive design
+ * Handles individual conversation routing
+ * Validates access and displays chat interface
+ * Works with /messages/[conversationId] route
  */
 
 'use client';
@@ -11,12 +11,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ClientHeader } from '@/components/ClientHeader';
-import { ConversationList } from '@/components/ConversationList';
 import { ChatInterface } from '@/components/ChatInterface';
 import { getCurrentUser, isConversationParticipant } from '@/lib/supabase';
 import { Conversation } from '@/lib/supabase';
 
-export default function MessagesPage() {
+export default function ConversationPage() {
   const params = useParams();
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -27,10 +26,10 @@ export default function MessagesPage() {
   const conversationId = params.conversationId as string;
 
   useEffect(() => {
-    checkAuth();
-  }, []);
+    checkAuthAndAccess();
+  }, [conversationId]);
 
-  const checkAuth = async () => {
+  const checkAuthAndAccess = async () => {
     try {
       const currentUser = await getCurrentUser();
       
@@ -41,24 +40,22 @@ export default function MessagesPage() {
 
       setUser(currentUser);
 
-      if (conversationId) {
-        // Check if user has access to this conversation
-        const hasAccess = await isConversationParticipant(currentUser.id, conversationId);
+      // Check if user has access to this conversation
+      const hasAccess = await isConversationParticipant(currentUser.id, conversationId);
         
-        if (!hasAccess) {
-          setAccessDenied(true);
-          setLoading(false);
-          return;
-        }
+      if (!hasAccess) {
+        setAccessDenied(true);
+        setLoading(false);
+        return;
+      }
 
-        // Fetch conversation details
-        const response = await fetch('/api/conversations');
-        const data = await response.json();
-        
-        if (data.conversations) {
-          const conv = data.conversations.find((c: Conversation) => c.id === conversationId);
-          setConversation(conv || null);
-        }
+      // Fetch conversation details
+      const response = await fetch('/api/conversations');
+      const data = await response.json();
+      
+      if (data.conversations) {
+        const conv = data.conversations.find((c: Conversation) => c.id === conversationId);
+        setConversation(conv || null);
       }
     } catch (error) {
       console.error('Error checking auth:', error);
@@ -73,7 +70,7 @@ export default function MessagesPage() {
         <ClientHeader />
         <div className="flex justify-center items-center h-[calc(100vh-64px)]">
           <div className="text-sm text-gray-500 dark:text-gray-400">
-            Loading...
+            Loading conversation...
           </div>
         </div>
       </div>
@@ -108,25 +105,38 @@ export default function MessagesPage() {
     );
   }
 
-  // Show chat interface if conversation ID is provided
-  if (conversationId && conversation) {
+  if (!conversation) {
     return (
       <div className="min-h-screen bg-white dark:bg-gray-900">
         <ClientHeader />
-        <ChatInterface
-          conversationId={conversationId}
-          currentUserId={user.id}
-          conversation={conversation}
-        />
+        <div className="flex justify-center items-center h-[calc(100vh-64px)]">
+          <div className="text-center">
+            <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+              Conversation Not Found
+            </h2>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+              This conversation doesn't exist or you don't have access to it.
+            </p>
+            <button
+              onClick={() => router.push('/messages')}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Back to Messages
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
 
-  // Show conversation list if no specific conversation
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       <ClientHeader />
-      <ConversationList userId={user.id} />
+      <ChatInterface
+        conversationId={conversationId}
+        currentUserId={user.id}
+        conversation={conversation}
+      />
     </div>
   );
 }
