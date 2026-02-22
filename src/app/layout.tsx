@@ -1,7 +1,7 @@
 /**
  * Root Layout Component
  * 
- * Main layout wrapper for the UMarket application
+ * Main layout wrapper for UMarket application
  * Server component - optimized for performance and SEO
  * Updated with AppWrapper for dark mode support
  */

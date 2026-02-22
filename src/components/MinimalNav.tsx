@@ -8,9 +8,10 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/Button';
 import dynamic from 'next/dynamic';
+import { supabase } from '@/lib/supabase';
 
 // Dynamic import for ThemeToggle to avoid SSR issues
 const ThemeToggle = dynamic(() => import('@/components/ThemeToggle').then(mod => ({ default: mod.ThemeToggle })), {
@@ -23,18 +24,44 @@ const ThemeToggle = dynamic(() => import('@/components/ThemeToggle').then(mod =>
 /**
  * Minimal Navigation Component
  * 
- * Provides clean navigation with reduced visual bulk
+ * Provides clean navigation with authentication-aware links
  * Uses compact spacing and minimal styling
  */
 export function MinimalNav() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const navItems = [
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user || null);
+      setLoading(false);
+    };
+
+    checkAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const publicNavItems = [
+    { href: '/login', label: 'Sign In' },
+    { href: '/signup', label: 'Sign Up' },
+  ];
+
+  const protectedNavItems = [
     { href: '/browse', label: 'Browse' },
     { href: '/create-listing', label: 'Create' },
     { href: '/messages', label: 'Messages' },
     { href: '/profile', label: 'Profile' },
   ];
+
+  const navItems = user ? protectedNavItems : publicNavItems;
 
   return (
     <nav className="border-b border-gray-200 dark:border-primary-700 bg-background-light dark:bg-background-dark">
@@ -49,17 +76,21 @@ export function MinimalNav() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
-            {navItems.map((item) => (
-              <Button
-                key={item.href}
-                href={item.href}
-                variant="ghost"
-                size="sm"
-                className="text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark"
-              >
-                {item.label}
-              </Button>
-            ))}
+            {loading ? (
+              <div className="w-16 h-6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            ) : (
+              navItems.map((item) => (
+                <Button
+                  key={item.href}
+                  href={item.href}
+                  variant="ghost"
+                  size="sm"
+                  className="text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark"
+                >
+                  {item.label}
+                </Button>
+              ))
+            )}
             <div className="ml-2">
               <ThemeToggle />
             </div>
@@ -68,25 +99,27 @@ export function MinimalNav() {
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center space-x-2">
             <ThemeToggle />
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-text-secondary-light dark:text-text-secondary-dark"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {isMobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </Button>
+            {!loading && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="text-text-secondary-light dark:text-text-secondary-dark"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {isMobileMenuOpen ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
+              </Button>
+            )}
           </div>
         </div>
 
         {/* Mobile Menu */}
-        {isMobileMenuOpen && (
+        {!loading && isMobileMenuOpen && (
           <div className="md:hidden border-t border-gray-200 dark:border-primary-700">
             <div className="py-2 space-y-1">
               {navItems.map((item) => (

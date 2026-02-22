@@ -8,215 +8,181 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/Button';
 import { ClientHeader } from '@/components/ClientHeader';
-import { getAllActiveListings } from '@/lib/featured-listing';
+import { motion } from 'framer-motion';
 
-// Get all active listings from centralized data source
-const mockItems = getAllActiveListings();
+interface Listing {
+  id: string;
+  title: string;
+  price: number;
+  category: string;
+  condition: string;
+  image?: string;
+  description: string;
+  postedAt: string;
+}
 
-const categories = ['All', 'Electronics', 'Books', 'Furniture', 'Clothing', 'Appliances'];
-const conditions = ['All', 'New', 'Like New', 'Good', 'Fair'];
-
-/**
- * Minimal Browse Page Component
- * 
- * Compact marketplace with clean grid layout
- * Reduced spacing and minimal visual elements
- */
-export default function MinimalBrowsePage() {
-  const [searchTerm, setSearchTerm] = useState('');
+export default function BrowsePage() {
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedCondition, setSelectedCondition] = useState('All');
-  const [sortBy, setSortBy] = useState('newest');
 
-  // Filter items based on search and filters
-  const filteredItems = mockItems.filter(item => {
-    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory;
-    const matchesCondition = selectedCondition === 'All' || item.condition === selectedCondition;
-    
-    return matchesSearch && matchesCategory && matchesCondition;
+  const categories = ['All', 'Electronics', 'Books', 'Furniture', 'Clothing', 'Appliances'];
+  const conditions = ['All', 'New', 'Like New', 'Good', 'Fair'];
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const params = new URLSearchParams();
+        if (selectedCategory !== 'All') params.set('category', selectedCategory);
+        if (selectedCondition !== 'All') params.set('condition', selectedCondition);
+        
+        const response = await fetch(`/api/listings?${params.toString()}`);
+        const data = await response.json();
+        setListings(data.listings || []);
+      } catch (error) {
+        console.error('Error fetching listings:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchListings();
+  }, [selectedCategory, selectedCondition]);
+
+  const filteredListings = listings.filter(listing => {
+    const categoryMatch = selectedCategory === 'All' || listing.category === selectedCategory;
+    const conditionMatch = selectedCondition === 'All' || listing.condition === selectedCondition;
+    return categoryMatch && conditionMatch;
   });
 
-  // Sort items
-  const sortedItems = [...filteredItems].sort((a, b) => {
-    switch (sortBy) {
-      case 'newest':
-        return new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime();
-      case 'oldest':
-        return new Date(a.postedAt).getTime() - new Date(b.postedAt).getTime();
-      case 'price-low':
-        return a.price - b.price;
-      case 'price-high':
-        return b.price - a.price;
-      default:
-        return 0;
-    }
-  });
-
-  return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
-      <ClientHeader />
-      
-      <main className="max-w-4xl mx-auto px-4 py-6">
-        {/* Page Header */}
-        <div className="mb-6">
-          <h1 className="text-xl font-medium text-gray-900 dark:text-white mb-2">
-            Browse
-          </h1>
-          <p className="text-sm text-gray-600 dark:text-gray-300">
-            Find great deals from fellow students
-          </p>
-        </div>
-
-        {/* Search and Filters */}
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-            {/* Search */}
-            <div className="md:col-span-2">
-              <label htmlFor="search" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Search
-              </label>
-              <input
-                id="search"
-                type="text"
-                placeholder="Search items..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-              />
-            </div>
-
-            {/* Category Filter */}
-            <div>
-              <label htmlFor="category" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Category
-              </label>
-              <select
-                id="category"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-              >
-                {categories.map(category => (
-                  <option key={category} value={category}>{category}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Condition Filter */}
-            <div>
-              <label htmlFor="condition" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Condition
-              </label>
-              <select
-                id="condition"
-                value={selectedCondition}
-                onChange={(e) => setSelectedCondition(e.target.value)}
-                className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-              >
-                {conditions.map(condition => (
-                  <option key={condition} value={condition}>{condition}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Sort */}
-            <div>
-              <label htmlFor="sort" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Sort
-              </label>
-              <select
-                id="sort"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-              >
-                <option value="newest">Newest</option>
-                <option value="oldest">Oldest</option>
-                <option value="price-low">Price: Low</option>
-                <option value="price-high">Price: High</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Results Count */}
-        <div className="mb-4">
-          <p className="text-sm text-gray-600 dark:text-gray-300">
-            {sortedItems.length} {sortedItems.length === 1 ? 'item' : 'items'}
-          </p>
-        </div>
-
-        {/* Items Grid */}
-        {sortedItems.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {sortedItems.map(item => (
-              <div
-                key={item.id}
-                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
-              >
-                <div className="aspect-w-4 aspect-h-3 bg-gray-200 dark:bg-gray-700 rounded-t">
-                  <div className="w-full h-32 bg-gray-200 dark:bg-gray-700 rounded-t flex items-center justify-center">
-                    <div className="text-gray-400 dark:text-gray-500 text-xs">
-                      No Image
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="p-3">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                      {item.title}
-                    </h3>
-                    <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                      ${item.price}
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                      {item.category}
-                    </span>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                      {item.condition}
-                    </span>
-                  </div>
-                  
-                  <p className="text-xs text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">
-                    {item.description}
-                  </p>
-                  
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      {item.postedAt}
-                    </span>
-                    <Button
-                      href={`/listing/${item.id}`}
-                      variant="outline"
-                      size="sm"
-                    >
-                      View
-                    </Button>
-                  </div>
-                </div>
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background-light dark:bg-background-dark">
+        <ClientHeader />
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-primary-700 rounded p-3">
+                <div className="w-full h-24 bg-gray-200 dark:bg-primary-800 rounded mb-3 animate-pulse"></div>
+                <div className="h-4 bg-gray-200 dark:bg-primary-800 rounded mb-2 animate-pulse"></div>
+                <div className="h-4 bg-gray-200 dark:bg-primary-800 rounded mb-2 animate-pulse"></div>
               </div>
             ))}
           </div>
-        ) : (
+        </div>
+      </div>
+    );
+  }
+
+  if (filteredListings.length === 0) {
+    return (
+      <div className="min-h-screen bg-background-light dark:bg-background-dark">
+        <ClientHeader />
+        <div className="max-w-4xl mx-auto px-4 py-6">
           <div className="text-center py-12">
-            <div className="text-gray-400 dark:text-gray-500 text-sm mb-2">
-              No items found
-            </div>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
-              Try adjusting your search or filters
+            <h2 className="text-xl font-medium text-text-primary-light dark:text-text-primary-dark mb-4">
+              No listings found
+            </h2>
+            <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-6">
+              Try adjusting your filters or be the first to post something!
             </p>
+            <Button href="/create-listing" variant="primary" size="md">
+              Create First Listing
+            </Button>
           </div>
-        )}
-      </main>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background-light dark:bg-background-dark">
+      <ClientHeader />
+      
+      <div className="max-w-4xl mx-auto px-4 py-6">
+        {/* Filters */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="mb-6"
+        >
+          <div className="flex flex-wrap gap-2 mb-4">
+            <div className="flex flex-wrap gap-2">
+              {categories.map(category => (
+                <Button
+                  key={category}
+                  variant={selectedCategory === category ? 'primary' : 'outline'}
+                  size="sm"
+                  onClick={() => setSelectedCategory(category)}
+                >
+                  {category}
+                </Button>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {conditions.map(condition => (
+                <Button
+                  key={condition}
+                  variant={selectedCondition === condition ? 'primary' : 'outline'}
+                  size="sm"
+                  onClick={() => setSelectedCondition(condition)}
+                >
+                  {condition}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Listings Grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: "easeOut", delay: 0.1 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+        >
+          {filteredListings.map((listing, index) => (
+            <motion.div
+              key={listing.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut", delay: index * 0.05 }}
+              className="bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-primary-700 rounded p-3 hover:shadow-lg"
+            >
+              <div className="w-full h-24 bg-gray-200 dark:bg-primary-800 rounded mb-3 flex items-center justify-center">
+                {listing.image ? (
+                  <img 
+                    src={listing.image} 
+                    alt={listing.title}
+                    className="w-full h-full object-cover rounded"
+                  />
+                ) : (
+                  <span className="text-xs text-text-secondary-light dark:text-text-secondary-dark">No Image</span>
+                )}
+              </div>
+              <h3 className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark mb-1 truncate">
+                {listing.title}
+              </h3>
+              <p className="text-sm font-medium text-primary-600 dark:text-primary-400 mb-2">
+                ${listing.price}
+              </p>
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
+                  {listing.category}
+                </span>
+                <span className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
+                  {listing.condition}
+                </span>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
     </div>
   );
 }

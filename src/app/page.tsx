@@ -10,10 +10,6 @@ import { Button } from '@/components/Button';
 import { ClientHeader } from '@/components/ClientHeader';
 import { getFeaturedListings } from '@/lib/featured-listing';
 
-// Get featured listings using deterministic hourly algorithm
-// This ensures the same listings appear during the same hour globally
-const featuredListings = getFeaturedListings(6);
-
 /**
  * Compact Hero Section
  * 
@@ -115,10 +111,24 @@ function HowItWorks() {
  * Uses deterministic hourly algorithm for selection
  * Clean card styling with minimal information
  */
-function FeaturedListings() {
+function FeaturedListings({ featuredListings }: { featuredListings: any[] }) {
   // Edge case: No listings available
   if (featuredListings.length === 0) {
-    return null;
+    return (
+      <section className="py-8 px-4 bg-surface-light dark:bg-surface-dark">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-lg font-medium text-text-primary-light dark:text-text-primary-dark mb-4">
+            No listings yet
+          </h2>
+          <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-4">
+            Be the first to post something for sale!
+          </p>
+          <Button href="/create-listing" variant="primary" size="md">
+            Create First Listing
+          </Button>
+        </div>
+      </section>
+    );
   }
 
   return (
@@ -258,7 +268,10 @@ function MinimalFooter() {
  * Structured content density while maintaining minimal aesthetic
  * Clean sections with intentional content placement
  */
-export default function EnhancedLandingPage() {
+export default async function EnhancedLandingPage() {
+  // Get featured listings using deterministic hourly algorithm
+  const featuredListings = await getFeaturedListings(6);
+
   return (
     <div className="min-h-screen bg-background-light dark:bg-background-dark">
       <ClientHeader />
@@ -266,7 +279,7 @@ export default function EnhancedLandingPage() {
       <main>
         <CompactHero />
         <HowItWorks />
-        <FeaturedListings />
+        <FeaturedListings featuredListings={featuredListings} />
         <CampusFocus />
       </main>
       
