@@ -6,6 +6,9 @@
  * Modern, lightweight design optimized for engagement
  */
 
+// Force dynamic rendering to prevent build crashes from Supabase fetches
+export const dynamic = "force-dynamic";
+
 import { Button } from '@/components/Button';
 import { ClientHeader } from '@/components/ClientHeader';
 import { getFeaturedListings } from '@/lib/featured-listing';
@@ -269,8 +272,15 @@ function MinimalFooter() {
  * Clean sections with intentional content placement
  */
 export default async function EnhancedLandingPage() {
-  // Get featured listings using deterministic hourly algorithm
-  const featuredListings = await getFeaturedListings(6);
+  // Get featured listings using deterministic hourly algorithm with error handling
+  let featuredListings: any[] = [];
+  
+  try {
+    featuredListings = await getFeaturedListings(6);
+  } catch (error) {
+    console.error('Error fetching featured listings:', error);
+    // Continue with empty array - UI will handle gracefully
+  }
 
   return (
     <div className="min-h-screen bg-background-light dark:bg-background-dark">

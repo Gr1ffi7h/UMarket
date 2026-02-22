@@ -31,6 +31,11 @@ function LoginForm() {
     setError('');
 
     try {
+      if (!supabase) {
+        setError('Database connection failed');
+        return;
+      }
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -105,6 +110,8 @@ export default function LoginPage() {
   useEffect(() => {
     // Check if user is already logged in
     const checkSession = async () => {
+      if (!supabase) return;
+      
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         router.push('/messages');

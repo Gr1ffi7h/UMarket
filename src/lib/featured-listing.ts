@@ -23,6 +23,11 @@ export interface Listing {
  * Get all active listings from database
  */
 async function getAllActiveListings(): Promise<Listing[]> {
+  if (!supabaseAdmin) {
+    console.error('Supabase admin client not initialized');
+    return [];
+  }
+
   try {
     const { data, error } = await supabaseAdmin
       .from('listings')

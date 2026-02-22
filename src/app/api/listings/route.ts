@@ -16,6 +16,15 @@ import { supabaseAdmin } from '@/lib/supabase';
  */
 export async function GET(request: NextRequest) {
   try {
+    // Defensive check for Supabase admin client
+    if (!supabaseAdmin) {
+      console.error('Supabase admin client not initialized');
+      return NextResponse.json(
+        { error: 'Database connection failed' },
+        { status: 500 }
+      );
+    }
+
     const url = new URL(request.url);
     const category = url.searchParams.get('category');
     const condition = url.searchParams.get('condition');

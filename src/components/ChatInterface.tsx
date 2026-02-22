@@ -35,7 +35,9 @@ export function ChatInterface({ conversationId, currentUserId, conversation }: C
     });
 
     return () => {
-      subscription.unsubscribe();
+      if (subscription) {
+        subscription.unsubscribe();
+      }
     };
   }, [conversationId]);
 

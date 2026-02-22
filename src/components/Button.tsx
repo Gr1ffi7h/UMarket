@@ -6,6 +6,8 @@
  * Optimized for fast, lightweight UI
  */
 
+"use client";
+
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';

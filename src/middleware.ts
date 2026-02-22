@@ -46,8 +46,16 @@ export async function middleware(request: NextRequest) {
   }
 
   // Create Supabase client for middleware
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder_anon_key';
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  
+  // Defensive check - if environment variables are missing, redirect to login
+  if (!supabaseUrl || !supabaseAnonKey || supabaseUrl.includes('placeholder.supabase.co')) {
+    console.error('Missing or invalid Supabase environment variables in middleware');
+    const loginUrl = new URL('/login', request.url);
+    return NextResponse.redirect(loginUrl);
+  }
+  
   const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
   try {

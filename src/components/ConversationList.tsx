@@ -25,24 +25,29 @@ export function ConversationList({ userId }: ConversationListProps) {
     fetchConversations();
     
     // Subscribe to real-time updates for conversations
-    const subscription = supabase
-      .channel('conversations')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'conversations',
-          filter: `buyer_id=eq.${userId},seller_id=eq.${userId}`,
-        },
-        () => {
-          fetchConversations();
-        }
-      )
-      .subscribe();
+    let subscription: any = null;
+    if (supabase) {
+      subscription = supabase
+        .channel('conversations')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'conversations',
+            filter: `buyer_id=eq.${userId},seller_id=eq.${userId}`,
+          },
+          () => {
+            fetchConversations();
+          }
+        )
+        .subscribe();
+    }
 
     return () => {
-      subscription.unsubscribe();
+      if (subscription) {
+        subscription.unsubscribe();
+      }
     };
   }, [userId]);
 
