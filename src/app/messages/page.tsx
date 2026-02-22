@@ -13,15 +13,14 @@ import { useParams, useRouter } from 'next/navigation';
 import { ClientHeader } from '@/components/ClientHeader';
 import { ConversationList } from '@/components/ConversationList';
 import { ChatInterface } from '@/components/ChatInterface';
-import { getCurrentUser, isConversationParticipant } from '@/lib/supabase';
-import { Conversation } from '@/lib/supabase';
+import { supabase } from '@/lib/supabaseClient';
 
 export default function MessagesPage() {
   const params = useParams();
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [conversation, setConversation] = useState<Conversation | null>(null);
+  const [conversation, setConversation] = useState<any>(null);
   const [accessDenied, setAccessDenied] = useState(false);
 
   const conversationId = params.conversationId as string;
@@ -32,33 +31,36 @@ export default function MessagesPage() {
 
   const checkAuth = async () => {
     try {
-      const currentUser = await getCurrentUser();
+      const { data: { session } } = await supabase.auth.getSession();
       
-      if (!currentUser) {
-        router.push('/login');
+      if (!session) {
+        router.push('/login?returnTo=/messages');
         return;
       }
 
-      setUser(currentUser);
+      setUser(session.user);
 
       if (conversationId) {
         // Check if user has access to this conversation
-        const hasAccess = await isConversationParticipant(currentUser.id, conversationId);
-        
-        if (!hasAccess) {
+        const { data: participants } = await supabase
+          .from('conversation_participants')
+          .select('user_id')
+          .eq('conversation_id', conversationId);
+
+        if (!participants || !participants.some(p => p.user_id === session.user.id)) {
           setAccessDenied(true);
           setLoading(false);
           return;
         }
 
         // Fetch conversation details
-        const response = await fetch('/api/conversations');
-        const data = await response.json();
-        
-        if (data.conversations) {
-          const conv = data.conversations.find((c: Conversation) => c.id === conversationId);
-          setConversation(conv || null);
-        }
+        const { data: conversations } = await supabase
+          .from('conversations')
+          .select('*')
+          .eq('id', conversationId)
+          .single();
+
+        setConversation(conversations || null);
       }
     } catch (error) {
       console.error('Error checking auth:', error);

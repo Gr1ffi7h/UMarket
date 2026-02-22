@@ -1,7 +1,7 @@
 /**
  * Admin Panel - Server Component
  * 
- * Secure admin interface for managing users and listings
+ * Secure admin interface for managing users, listings, and conversations
  * Protected by middleware and server-side role verification
  */
 
@@ -53,17 +53,31 @@ async function getAdminData() {
     .from('listings')
     .select(`
       *,
-      profiles: seller_id(id, username, email)
+      profiles:user_id(id, full_name)
     `)
-    .order('posted_at', { ascending: false });
+    .order('created_at', { ascending: false });
 
   if (listingsError) {
     console.error('Error fetching listings:', listingsError);
   }
 
+  // Get all conversations
+  const { data: conversations, error: conversationsError } = await supabase
+    .from('conversations')
+    .select(`
+      *,
+      messages:messages(count)
+    `)
+    .order('created_at', { ascending: false });
+
+  if (conversationsError) {
+    console.error('Error fetching conversations:', conversationsError);
+  }
+
   return {
     users: users || [],
     listings: listings || [],
+    conversations: conversations || [],
     currentUserId: session.user.id
   };
 }
@@ -73,16 +87,17 @@ export default async function AdminPage() {
     const adminData = await getAdminData();
     
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Admin Panel</h1>
-            <p className="text-gray-600 mt-2">Manage users and listings</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Admin Panel</h1>
+            <p className="text-gray-600 dark:text-gray-300 mt-2">Manage users, listings, and conversations</p>
           </div>
           
           <AdminDashboard 
             initialUsers={adminData.users}
             initialListings={adminData.listings}
+            initialConversations={adminData.conversations}
             currentUserId={adminData.currentUserId}
           />
         </div>

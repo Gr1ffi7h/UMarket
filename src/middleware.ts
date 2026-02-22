@@ -3,7 +3,7 @@
  * 
  * Protects routes that require authentication
  * Redirects unauthenticated users to login
- * Ensures only .edu verified users can access protected features
+ * Enforces admin-only routes
  */
 
 import { NextResponse } from 'next/server';
@@ -18,6 +18,10 @@ const protectedRoutes = [
   '/profile',
   '/my-listings',
   '/listing',
+];
+
+// Admin-only routes
+const adminRoutes = [
   '/admin',
 ];
 
@@ -42,7 +46,11 @@ export async function middleware(request: NextRequest) {
     pathname === route || pathname.startsWith(route + '/')
   );
 
-  if (!isProtectedRoute) {
+  const isAdminRoute = adminRoutes.some(route => 
+    pathname === route || pathname.startsWith(route + '/')
+  );
+
+  if (!isProtectedRoute && !isAdminRoute) {
     return NextResponse.next();
   }
 
@@ -50,9 +58,8 @@ export async function middleware(request: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   
-  // Defensive check - if environment variables are missing, redirect to login
-  if (!supabaseUrl || !supabaseAnonKey || supabaseUrl.includes('placeholder.supabase.co')) {
-    console.error('Missing or invalid Supabase environment variables in middleware');
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error('Missing Supabase environment variables in middleware');
     const loginUrl = new URL('/login', request.url);
     return NextResponse.redirect(loginUrl);
   }
@@ -71,7 +78,7 @@ export async function middleware(request: NextRequest) {
     }
 
     // Check for admin route access
-    if (pathname.startsWith('/admin')) {
+    if (isAdminRoute) {
       // Get user profile to check role
       const { data: profile, error: profileError } = await supabase
         .from('profiles')

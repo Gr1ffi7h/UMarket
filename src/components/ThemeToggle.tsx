@@ -1,101 +1,59 @@
 /**
  * Theme Toggle Component
  * 
- * Modern, accessible theme toggle button for light/dark mode switching
- * Features smooth animations and proper ARIA labels
- * Fully functional with ThemeProvider context
+ * Simple light/dark mode toggle with smooth transitions
+ * Uses localStorage for persistence
  */
 
 'use client';
 
-import React from 'react';
-import { useTheme } from './ThemeProvider';
+import { useState, useEffect } from 'react';
 
-/**
- * Theme toggle button with sun/moon icons
- * Provides visual feedback for current theme state
- */
 export function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
+  const [isDark, setIsDark] = useState(false);
 
-  // Prevent hydration mismatch
-  React.useEffect(() => {
-    setMounted(true);
+  useEffect(() => {
+    // Check localStorage and system preference
+    const stored = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (stored === 'dark' || (!stored && systemPrefersDark)) {
+      setIsDark(true);
+      document.documentElement.classList.add('dark');
+    } else {
+      setIsDark(false);
+      document.documentElement.classList.remove('dark');
+    }
   }, []);
 
-  if (!mounted) {
-    return (
-      <button
-        className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 w-10 h-10"
-        aria-label="Loading theme toggle"
-        disabled
-      />
-    );
-  }
-
-  const isDark = theme === 'dark';
+  const toggleTheme = () => {
+    const newTheme = isDark ? 'light' : 'dark';
+    setIsDark(!isDark);
+    
+    if (newTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    
+    localStorage.setItem('theme', newTheme);
+  };
 
   return (
     <button
-      type="button"
       onClick={toggleTheme}
-      className={`
-        relative p-2 rounded-lg transition-all duration-300 ease-in-out
-        bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700
-        border border-gray-300 dark:border-gray-600
-        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-        dark:focus:ring-offset-gray-900
-        w-10 h-10 flex items-center justify-center
-        group
-      `}
-      aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
-      title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+      className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+      aria-label="Toggle theme"
     >
-      <span className="sr-only">Toggle theme</span>
-      
-      {/* Sun icon for light mode */}
-      <svg
-        className={`
-          h-5 w-5 text-yellow-600 dark:text-yellow-500 transition-all duration-300 ease-in-out
-          ${isDark ? 'opacity-0 scale-0 rotate-180 absolute' : 'opacity-100 scale-100 rotate-0'}
-        `}
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        aria-hidden="true"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-        />
-      </svg>
-      
-      {/* Moon icon for dark mode */}
-      <svg
-        className={`
-          h-5 w-5 text-blue-600 dark:text-blue-400 transition-all duration-300 ease-in-out
-          ${isDark ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-0 -rotate-180 absolute'}
-        `}
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        aria-hidden="true"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-        />
-      </svg>
-      
-      {/* Subtle hover effect */}
-      <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-transparent via-white/20 to-transparent dark:via-white/10 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
+      {isDark ? (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 9.364l-.5-.5m0 0l.5.5M21 12h-1" />
+        </svg>
+      ) : (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 0118.646 3.646 9 9 0 00-1.354 1.354L12 7.793l5.646 5.646A9 9 0 0021.354 15.354l-5.646 5.646L12 16.207l-5.646 5.646z" />
+        </svg>
+      )}
     </button>
   );
 }
