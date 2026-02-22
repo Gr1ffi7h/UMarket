@@ -22,12 +22,12 @@ const featuredListings = getFeaturedListings(6);
  */
 function CompactHero() {
   return (
-    <section className="py-8 px-4 bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-900">
+    <section className="py-8 px-4 bg-gradient-to-b from-soft-50 to-background-light dark:from-primary-900 dark:to-background-dark">
       <div className="max-w-4xl mx-auto text-center">
-        <h1 className="text-2xl font-medium text-gray-900 dark:text-white mb-3">
+        <h1 className="text-2xl font-medium text-text-primary-light dark:text-text-primary-dark mb-3">
           Campus Marketplace
         </h1>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mb-6 max-w-md mx-auto">
+        <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-6 max-w-md mx-auto">
           Buy and sell with fellow students. Simple, safe, and local.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -81,23 +81,23 @@ function HowItWorks() {
   ];
 
   return (
-    <section className="py-8 px-4 bg-white dark:bg-gray-900">
+    <section className="py-8 px-4 bg-background-light dark:bg-background-dark">
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-6 text-center">
+        <h2 className="text-lg font-medium text-text-primary-light dark:text-text-primary-dark mb-6 text-center">
           How It Works
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {steps.map((step, index) => (
             <div key={index} className="text-center">
-              <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-3">
-                <div className="text-blue-600 dark:text-blue-400">
+              <div className="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                <div className="text-primary-600 dark:text-primary-400">
                   {step.icon}
                 </div>
               </div>
-              <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">
+              <h3 className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark mb-1">
                 {step.title}
               </h3>
-              <p className="text-xs text-gray-600 dark:text-gray-300">
+              <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
                 {step.description}
               </p>
             </div>
@@ -122,10 +122,10 @@ function FeaturedListings() {
   }
 
   return (
-    <section className="py-8 px-4 bg-gray-50 dark:bg-gray-800">
+    <section className="py-8 px-4 bg-surface-light dark:bg-surface-dark">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg font-medium text-gray-900 dark:text-white">
+          <h2 className="text-lg font-medium text-text-primary-light dark:text-text-primary-dark">
             Featured Listings
           </h2>
           <Button href="/browse" variant="outline" size="sm">
@@ -134,21 +134,21 @@ function FeaturedListings() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {featuredListings.map(listing => (
-            <div key={listing.id} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded p-3">
-              <div className="w-full h-24 bg-gray-200 dark:bg-gray-700 rounded mb-3 flex items-center justify-center">
-                <span className="text-xs text-gray-400 dark:text-gray-500">No Image</span>
+            <div key={listing.id} className="bg-background-light dark:bg-background-dark border border-gray-200 dark:border-primary-700 rounded p-3">
+              <div className="w-full h-24 bg-gray-200 dark:bg-primary-800 rounded mb-3 flex items-center justify-center">
+                <span className="text-xs text-text-secondary-light dark:text-text-secondary-dark">No Image</span>
               </div>
-              <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1 truncate">
+              <h3 className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark mb-1 truncate">
                 {listing.title}
               </h3>
-              <p className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-2">
+              <p className="text-sm font-medium text-primary-600 dark:text-primary-400 mb-2">
                 ${listing.price}
               </p>
               <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-600 dark:text-gray-300">
+                <span className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
                   {listing.category}
                 </span>
-                <span className="text-xs text-gray-600 dark:text-gray-300">
+                <span className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
                   {listing.condition}
                 </span>
               </div>
@@ -168,30 +168,30 @@ function FeaturedListings() {
  */
 function CampusFocus() {
   return (
-    <section className="py-8 px-4 bg-white dark:bg-gray-900">
+    <section className="py-8 px-4 bg-background-light dark:bg-background-dark">
       <div className="max-w-4xl mx-auto text-center">
-        <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-3">
+        <h2 className="text-lg font-medium text-text-primary-light dark:text-text-primary-dark mb-3">
           Campus-First Marketplace
         </h2>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 max-w-md mx-auto">
+        <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-4 max-w-md mx-auto">
           Only verified students with .edu email addresses can participate. 
           This ensures a safe, trusted environment for campus trading.
         </p>
-        <div className="flex justify-center gap-6 text-xs text-gray-500 dark:text-gray-400">
+        <div className="flex justify-center gap-6 text-xs text-text-secondary-light dark:text-text-secondary-dark">
           <div className="flex items-center gap-1">
-            <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-4 h-4 text-success-500" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
             <span>.edu Verification</span>
           </div>
           <div className="flex items-center gap-1">
-            <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-4 h-4 text-success-500" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
             <span>Campus Local</span>
           </div>
           <div className="flex items-center gap-1">
-            <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-4 h-4 text-success-500" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
             <span>Safe Trading</span>
@@ -210,41 +210,41 @@ function CampusFocus() {
  */
 function MinimalFooter() {
   return (
-    <footer className="py-6 px-4 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+    <footer className="py-6 px-4 bg-surface-light dark:bg-surface-dark border-t border-gray-200 dark:border-primary-700">
       <div className="max-w-4xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div>
-            <h3 className="text-xs font-medium text-gray-900 dark:text-white mb-2">
+            <h3 className="text-xs font-medium text-text-primary-light dark:text-text-primary-dark mb-2">
               Marketplace
             </h3>
             <ul className="space-y-1">
-              <li><a href="/browse" className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">Browse</a></li>
-              <li><a href="/create-listing" className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">Sell</a></li>
-              <li><a href="/my-listings" className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">My Listings</a></li>
+              <li><a href="/browse" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">Browse</a></li>
+              <li><a href="/create-listing" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">Sell</a></li>
+              <li><a href="/my-listings" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">My Listings</a></li>
             </ul>
           </div>
           <div>
-            <h3 className="text-xs font-medium text-gray-900 dark:text-white mb-2">
+            <h3 className="text-xs font-medium text-text-primary-light dark:text-text-primary-dark mb-2">
               Account
             </h3>
             <ul className="space-y-1">
-              <li><a href="/profile" className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">Profile</a></li>
-              <li><a href="/messages" className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">Messages</a></li>
-              <li><a href="/profile/edit" className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">Settings</a></li>
+              <li><a href="/profile" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">Profile</a></li>
+              <li><a href="/messages" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">Messages</a></li>
+              <li><a href="/profile/edit" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">Settings</a></li>
             </ul>
           </div>
           <div>
-            <h3 className="text-xs font-medium text-gray-900 dark:text-white mb-2">
+            <h3 className="text-xs font-medium text-text-primary-light dark:text-text-primary-dark mb-2">
               About
             </h3>
             <ul className="space-y-1">
-              <li><a href="#" className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">Safety</a></li>
-              <li><a href="#" className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">Terms</a></li>
-              <li><a href="#" className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">Privacy</a></li>
+              <li><a href="#" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">Safety</a></li>
+              <li><a href="#" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">Terms</a></li>
+              <li><a href="#" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">Privacy</a></li>
             </ul>
           </div>
         </div>
-        <div className="text-center text-xs text-gray-500 dark:text-gray-400">
+        <div className="text-center text-xs text-text-secondary-light dark:text-text-secondary-dark">
           © 2024 UMarket. Campus marketplace for students.
         </div>
       </div>
@@ -260,7 +260,7 @@ function MinimalFooter() {
  */
 export default function EnhancedLandingPage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className="min-h-screen bg-background-light dark:bg-background-dark">
       <ClientHeader />
       
       <main>

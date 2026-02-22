@@ -96,7 +96,7 @@ export function ConversationList({ userId }: ConversationListProps) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-6">
         <div className="flex justify-center items-center h-64">
-          <div className="text-sm text-gray-500 dark:text-gray-400">
+          <div className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
             Loading conversations...
           </div>
         </div>
@@ -108,15 +108,15 @@ export function ConversationList({ userId }: ConversationListProps) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-6">
         <div className="text-center py-12">
-          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+          <h2 className="text-lg font-medium text-text-primary-light dark:text-text-primary-dark mb-2">
             No conversations yet
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-300">
+          <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
             Start a conversation by contacting sellers from listings
           </p>
           <Link 
             href="/browse" 
-            className="inline-block mt-4 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
+            className="inline-block mt-4 text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
           >
             Browse Listings →
           </Link>
@@ -127,7 +127,7 @@ export function ConversationList({ userId }: ConversationListProps) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
-      <h1 className="text-xl font-medium text-gray-900 dark:text-white mb-6">
+      <h1 className="text-xl font-medium text-text-primary-light dark:text-text-primary-dark mb-6">
         Messages
       </h1>
       
@@ -139,11 +139,11 @@ export function ConversationList({ userId }: ConversationListProps) {
             <Link
               key={conversation.id}
               href={`/messages/${conversation.id}`}
-              className="block bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-4 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
+              className="block bg-background-light dark:bg-background-dark border border-gray-200 dark:border-primary-700 rounded p-4 hover:bg-gray-50 dark:hover:bg-primary-800 transition-colors"
             >
               <div className="flex items-start space-x-3">
                 {/* Avatar */}
-                <div className="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 bg-gray-300 dark:bg-primary-700 rounded-full flex items-center justify-center flex-shrink-0">
                   {otherParticipant?.avatar_url ? (
                     <img 
                       src={otherParticipant.avatar_url} 
@@ -151,7 +151,7 @@ export function ConversationList({ userId }: ConversationListProps) {
                       className="w-10 h-10 rounded-full object-cover"
                     />
                   ) : (
-                    <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                    <span className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">
                       {otherParticipant?.username?.charAt(0) || '?'}
                     </span>
                   )}
@@ -161,19 +161,19 @@ export function ConversationList({ userId }: ConversationListProps) {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between mb-1">
                     <div>
-                      <h3 className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                      <h3 className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark truncate">
                         {otherParticipant?.username || 'Unknown User'}
                       </h3>
-                      <p className="text-xs text-gray-600 dark:text-gray-300 truncate">
+                      <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark truncate">
                         {conversation.listing?.title}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                      <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
                         {formatLastMessageTime(conversation.created_at)}
                       </p>
                       {conversation.listing?.price && (
-                        <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                        <p className="text-sm font-medium text-primary-600 dark:text-primary-400">
                           ${conversation.listing.price}
                         </p>
                       )}
@@ -181,7 +181,7 @@ export function ConversationList({ userId }: ConversationListProps) {
                   </div>
                   
                   {/* Last message preview would go here */}
-                  <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                  <div className="text-xs text-text-secondary-light dark:text-text-secondary-dark truncate">
                     Tap to view conversation
                   </div>
                 </div>

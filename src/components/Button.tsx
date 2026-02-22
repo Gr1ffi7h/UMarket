@@ -50,23 +50,24 @@ export function Button({
 
   const variantClasses = {
     primary: `
-      bg-blue-600 text-white
-      hover:bg-blue-700 focus:ring-blue-500
-      border border-blue-600
+      bg-primary-600 text-white
+      hover:bg-primary-700 focus:ring-primary-500
+      border border-primary-600
+      shadow-sm
     `,
     secondary: `
-      bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100
-      hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-gray-500
-      border border-gray-300 dark:border-gray-600
+      bg-surface-light text-text-primary-light dark:bg-surface-dark dark:text-text-primary-dark
+      hover:bg-gray-100 dark:hover:bg-primary-800 focus:ring-primary-500
+      border border-gray-200 dark:border-primary-700
     `,
     outline: `
-      bg-transparent text-gray-700 dark:text-gray-300
-      hover:bg-gray-50 dark:hover:bg-gray-800 focus:ring-gray-500
-      border border-gray-300 dark:border-gray-600
+      bg-transparent text-text-primary-light dark:text-text-primary-dark
+      hover:bg-gray-50 dark:hover:bg-primary-900 focus:ring-primary-500
+      border border-gray-300 dark:border-primary-600
     `,
     ghost: `
-      bg-transparent text-gray-600 dark:text-gray-400
-      hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200 focus:ring-gray-500
+      bg-transparent text-text-secondary-light dark:text-text-secondary-dark
+      hover:bg-gray-100 dark:hover:bg-primary-800 hover:text-text-primary-light dark:hover:text-text-primary-dark focus:ring-primary-500
       border border-transparent
     `,
   };

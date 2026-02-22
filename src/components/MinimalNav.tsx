@@ -37,12 +37,12 @@ export function MinimalNav() {
   ];
 
   return (
-    <nav className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+    <nav className="border-b border-gray-200 dark:border-primary-700 bg-background-light dark:bg-background-dark">
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex items-center justify-between h-12">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <h1 className="text-lg font-medium text-gray-900 dark:text-white">
+            <h1 className="text-lg font-medium text-text-primary-light dark:text-text-primary-dark">
               UMarket
             </h1>
           </div>
@@ -55,7 +55,7 @@ export function MinimalNav() {
                 href={item.href}
                 variant="ghost"
                 size="sm"
-                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                className="text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark"
               >
                 {item.label}
               </Button>
@@ -72,7 +72,7 @@ export function MinimalNav() {
               variant="ghost"
               size="sm"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-gray-600 dark:text-gray-400"
+              className="text-text-secondary-light dark:text-text-secondary-dark"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {isMobileMenuOpen ? (
@@ -87,7 +87,7 @@ export function MinimalNav() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 dark:border-gray-700">
+          <div className="md:hidden border-t border-gray-200 dark:border-primary-700">
             <div className="py-2 space-y-1">
               {navItems.map((item) => (
                 <Button
@@ -95,7 +95,7 @@ export function MinimalNav() {
                   href={item.href}
                   variant="ghost"
                   size="sm"
-                  className="w-full justify-start text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                  className="w-full justify-start text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.label}
