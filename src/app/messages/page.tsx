@@ -96,7 +96,7 @@ export default function MessagesPage() {
               Access Denied
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-              You don't have permission to view this conversation.
+              You don&apos;t have permission to view this conversation.
             </p>
             <button
               onClick={() => router.push('/messages')}

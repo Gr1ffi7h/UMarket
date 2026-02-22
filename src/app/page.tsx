@@ -12,6 +12,7 @@ export const dynamic = "force-dynamic";
 import { Button } from '@/components/Button';
 import { ClientHeader } from '@/components/ClientHeader';
 import { getFeaturedListings } from '@/lib/featured-listing';
+import Link from 'next/link';
 
 /**
  * Compact Hero Section
@@ -231,9 +232,9 @@ function MinimalFooter() {
               Marketplace
             </h3>
             <ul className="space-y-1">
-              <li><a href="/browse" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">Browse</a></li>
-              <li><a href="/create-listing" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">Sell</a></li>
-              <li><a href="/my-listings" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">My Listings</a></li>
+              <li><Link href="/browse" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">Browse</Link></li>
+              <li><Link href="/create-listing" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">Sell</Link></li>
+              <li><Link href="/my-listings" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">My Listings</Link></li>
             </ul>
           </div>
           <div>
@@ -241,9 +242,9 @@ function MinimalFooter() {
               Account
             </h3>
             <ul className="space-y-1">
-              <li><a href="/profile" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">Profile</a></li>
-              <li><a href="/messages" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">Messages</a></li>
-              <li><a href="/profile/edit" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">Settings</a></li>
+              <li><Link href="/profile" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">Profile</Link></li>
+              <li><Link href="/messages" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">Messages</Link></li>
+              <li><Link href="/profile/edit" className="text-xs text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">Settings</Link></li>
             </ul>
           </div>
           <div>

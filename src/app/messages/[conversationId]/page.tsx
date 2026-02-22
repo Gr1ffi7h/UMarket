@@ -91,7 +91,7 @@ export default function ConversationPage() {
               Access Denied
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-              You don't have permission to view this conversation.
+              You don&apos;t have permission to view this conversation.
             </p>
             <button
               onClick={() => router.push('/messages')}
@@ -115,7 +115,7 @@ export default function ConversationPage() {
               Conversation Not Found
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-              This conversation doesn't exist or you don't have access to it.
+              This conversation doesn&apos;t exist or you don&apos;t have access to it.
             </p>
             <button
               onClick={() => router.push('/messages')}

@@ -55,7 +55,8 @@ export function Navigation() {
               <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-8 w-32 rounded"></div>
             </div>
           </div>
-        </nav>
+        </div>
+      </nav>
     );
   }
 
@@ -136,7 +137,7 @@ export function Navigation() {
             )}
           </div>
         </div>
-      </nav>
-    </div>
+      </div>
+    </nav>
   );
 }
