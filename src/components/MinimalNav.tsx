@@ -11,7 +11,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/Button';
 import dynamic from 'next/dynamic';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabaseClient';
 
 // Dynamic import for ThemeToggle to avoid SSR issues
 const ThemeToggle = dynamic(() => import('@/components/ThemeToggle').then(mod => ({ default: mod.ThemeToggle })), {

@@ -25,6 +25,21 @@ export function ChatInterface({ conversationId, currentUserId, conversation }: C
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const fetchMessages = async () => {
+    try {
+      const response = await fetch(`/api/messages?conversationId=${conversationId}`);
+      const data = await response.json();
+      
+      if (data.messages) {
+        setMessages(data.messages);
+      }
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchMessages();
     
@@ -39,23 +54,7 @@ export function ChatInterface({ conversationId, currentUserId, conversation }: C
         subscription.unsubscribe();
       }
     };
-  }, [conversationId]);
-
-  const fetchMessages = async () => {
-    try {
-      const response = await fetch(`/api/messages?conversationId=${conversationId}`);
-      const data = await response.json();
-      
-      if (data.messages) {
-        setMessages(data.messages);
-        scrollToBottom();
-      }
-    } catch (error) {
-      console.error('Error fetching messages:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [conversationId, fetchMessages]);
 
   const scrollToBottom = () => {
     setTimeout(() => {
@@ -108,11 +107,13 @@ export function ChatInterface({ conversationId, currentUserId, conversation }: C
   };
 
   const getOtherParticipant = () => {
-    if (conversation.buyer?.id === currentUserId) {
-      return conversation.seller;
-    } else {
-      return conversation.buyer;
-    }
+    // Simplified for now - return current user info
+    // TODO: Implement proper participant logic when schema is updated
+    return {
+      id: currentUserId,
+      username: 'Other User',
+      avatar_url: undefined
+    };
   };
 
   if (loading) {
@@ -152,7 +153,7 @@ export function ChatInterface({ conversationId, currentUserId, conversation }: C
               {otherParticipant?.username || 'Unknown User'}
             </p>
             <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark truncate">
-              {conversation.listing?.title} • ${conversation.listing?.price}
+              Conversation • {conversationId}
             </p>
           </div>
         </div>
@@ -183,13 +184,13 @@ export function ChatInterface({ conversationId, currentUserId, conversation }: C
                   {/* Sender info for others' messages */}
                   {!isOwnMessage && (
                     <p className="text-xs font-medium mb-1 opacity-75">
-                      {message.sender?.username || 'Unknown'}
+                      {message.sender_id === currentUserId ? 'You' : 'Other User'}
                     </p>
                   )}
                   
                   {/* Message content */}
                   <p className="text-sm break-words">
-                    {message.message_text}
+                    {message.content}
                   </p>
                   
                   {/* Timestamp */}

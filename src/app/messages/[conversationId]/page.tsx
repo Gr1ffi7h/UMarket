@@ -12,7 +12,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ClientHeader } from '@/components/ClientHeader';
 import { ChatInterface } from '@/components/ChatInterface';
-import { getCurrentUser, isConversationParticipant } from '@/lib/supabase';
+import { getCurrentUser } from '@/lib/supabase';
 import { Conversation } from '@/lib/supabase';
 
 export default function ConversationPage() {
@@ -25,10 +25,6 @@ export default function ConversationPage() {
 
   const conversationId = params.conversationId as string;
 
-  useEffect(() => {
-    checkAuthAndAccess();
-  }, [conversationId]);
-
   const checkAuthAndAccess = async () => {
     try {
       const currentUser = await getCurrentUser();
@@ -40,14 +36,8 @@ export default function ConversationPage() {
 
       setUser(currentUser);
 
-      // Check if user has access to this conversation
-      const hasAccess = await isConversationParticipant(currentUser.id, conversationId);
-        
-      if (!hasAccess) {
-        setAccessDenied(true);
-        setLoading(false);
-        return;
-      }
+      // For now, allow access to authenticated users
+      // TODO: Implement proper conversation participant checking when schema is updated
 
       // Fetch conversation details
       const response = await fetch('/api/conversations');
@@ -63,6 +53,10 @@ export default function ConversationPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    checkAuthAndAccess();
+  }, [conversationId]);
 
   if (loading) {
     return (

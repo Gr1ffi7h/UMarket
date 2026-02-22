@@ -6,43 +6,36 @@
  * Ensures same listing appears during the same hour globally
  */
 
-import { supabaseAdmin } from './supabase';
+import { supabase } from './supabaseClient';
 
 export interface Listing {
   id: string;
   title: string;
   price: number;
-  category: string;
-  condition: string;
-  image?: string;
   description: string;
-  postedAt: string;
+  created_at: string;
 }
 
 /**
  * Get all active listings from database
  */
 async function getAllActiveListings(): Promise<Listing[]> {
-  if (!supabaseAdmin) {
-    console.error('Supabase admin client not initialized');
+  if (!supabase) {
+    console.error('Supabase client not initialized');
     return [];
   }
 
   try {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabase
       .from('listings')
       .select(`
         id,
         title,
         price,
-        category,
-        condition,
-        image,
         description,
-        posted_at
+        created_at
       `)
-      .eq('status', 'active')
-      .order('posted_at', { ascending: false });
+      .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching listings:', error);
@@ -53,11 +46,8 @@ async function getAllActiveListings(): Promise<Listing[]> {
       id: listing.id,
       title: listing.title,
       price: listing.price,
-      category: listing.category,
-      condition: listing.condition,
-      image: listing.image,
       description: listing.description,
-      postedAt: listing.posted_at,
+      created_at: listing.created_at,
     })) || [];
   } catch (error) {
     console.error('Database error:', error);

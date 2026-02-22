@@ -51,10 +51,7 @@ async function getAdminData() {
   // Get all listings
   const { data: listings, error: listingsError } = await supabase
     .from('listings')
-    .select(`
-      *,
-      profiles:user_id(id, full_name)
-    `)
+    .select('*')
     .order('created_at', { ascending: false });
 
   if (listingsError) {
@@ -64,10 +61,7 @@ async function getAdminData() {
   // Get all conversations
   const { data: conversations, error: conversationsError } = await supabase
     .from('conversations')
-    .select(`
-      *,
-      messages:messages(count)
-    `)
+    .select('*')
     .order('created_at', { ascending: false });
 
   if (conversationsError) {

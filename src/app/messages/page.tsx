@@ -25,10 +25,6 @@ export default function MessagesPage() {
 
   const conversationId = params.conversationId as string;
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
   const checkAuth = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -68,6 +64,10 @@ export default function MessagesPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    checkAuth();
+  }, [conversationId]);
 
   if (loading) {
     return (

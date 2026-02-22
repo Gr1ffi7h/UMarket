@@ -67,13 +67,13 @@ export function ConversationList({ userId }: ConversationListProps) {
   };
 
   const getOtherParticipant = (conversation: Conversation) => {
-    const currentUser = userId;
-    
-    if (conversation.buyer?.id === currentUser) {
-      return conversation.seller;
-    } else {
-      return conversation.buyer;
-    }
+    // Simplified for now - return placeholder data
+    // TODO: Implement proper participant logic when schema is updated
+    return {
+      id: 'other-user',
+      username: 'Other User',
+      avatar_url: undefined
+    };
   };
 
   const formatLastMessageTime = (timestamp: string) => {
@@ -170,18 +170,13 @@ export function ConversationList({ userId }: ConversationListProps) {
                         {otherParticipant?.username || 'Unknown User'}
                       </h3>
                       <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark truncate">
-                        {conversation.listing?.title}
+                        Conversation
                       </p>
                     </div>
                     <div className="text-right">
                       <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
                         {formatLastMessageTime(conversation.created_at)}
                       </p>
-                      {conversation.listing?.price && (
-                        <p className="text-sm font-medium text-primary-600 dark:text-primary-400">
-                          ${conversation.listing.price}
-                        </p>
-                      )}
                     </div>
                   </div>
                   

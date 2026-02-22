@@ -275,7 +275,7 @@ export default function MinimalListingDetailsPage({ params }: { params: Promise<
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-600 dark:text-gray-300">Rating</span>
-                  <span className="font-medium text-gray-900 dark:text-white">⭐ {listing.seller.rating}/5.0</span>
+                  <span className="font-medium text-gray-900 dark:text-white">{listing.seller.rating}/5.0</span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-600 dark:text-gray-300">Sales</span>
