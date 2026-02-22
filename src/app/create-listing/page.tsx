@@ -8,9 +8,11 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/Button';
 import { ClientHeader } from '@/components/ClientHeader';
+import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 
 const categories = [
   'Electronics',
@@ -47,6 +49,44 @@ export default function MinimalCreateListingPage() {
   const [images, setImages] = useState<File[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (!supabase) {
+        setLoading(false);
+        return;
+      }
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push('/login?returnTo=/create-listing');
+        return;
+      }
+      
+      setUser(session.user);
+      setLoading(false);
+    };
+
+    checkAuth();
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null; // Will redirect
+  }
 
   /**
    * Handle form input changes
@@ -134,12 +174,59 @@ export default function MinimalCreateListingPage() {
       return;
     }
 
+    if (!user || !supabase) {
+      setErrors({ submit: 'Authentication required' });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      window.location.href = '/browse';
-    } catch {
+      // Upload images first (if any)
+      let imageUrl = '';
+      if (images.length > 0) {
+        const file = images[0]; // Use first image as primary
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('listing-images')
+          .upload(fileName, file);
+
+        if (uploadError) {
+          throw new Error('Failed to upload image');
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('listing-images')
+          .getPublicUrl(fileName);
+        
+        imageUrl = publicUrl;
+      }
+
+      // Create listing with authenticated user ID
+      const { data: listing, error: insertError } = await supabase
+        .from('listings')
+        .insert({
+          title: formData.title.trim(),
+          description: formData.description.trim(),
+          price: parseFloat(formData.price),
+          category: formData.category,
+          condition: formData.condition,
+          image: imageUrl,
+          seller_id: user.id, // This comes from the session, not the form
+        })
+        .select()
+        .single();
+
+      if (insertError) {
+        throw new Error(insertError.message);
+      }
+
+      // Redirect to the new listing
+      router.push(`/listing/${listing.id}`);
+    } catch (error) {
+      console.error('Error creating listing:', error);
       setErrors({ submit: 'Failed to create listing. Please try again.' });
     } finally {
       setIsSubmitting(false);

@@ -1,0 +1,97 @@
+/**
+ * Admin Panel - Server Component
+ * 
+ * Secure admin interface for managing users and listings
+ * Protected by middleware and server-side role verification
+ */
+
+import { redirect } from 'next/navigation';
+import { createClient } from '@supabase/supabase-js';
+import { AdminDashboard } from '@/components/AdminDashboard';
+
+// Supabase configuration
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+async function getAdminData() {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Missing Supabase configuration');
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+  // Get current session
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+  
+  if (sessionError || !session) {
+    redirect('/login');
+  }
+
+  // Verify admin role
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', session.user.id)
+    .single();
+
+  if (profileError || !profile || profile.role !== 'admin') {
+    redirect('/');
+  }
+
+  // Get all users
+  const { data: users, error: usersError } = await supabase
+    .from('profiles')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (usersError) {
+    console.error('Error fetching users:', usersError);
+  }
+
+  // Get all listings
+  const { data: listings, error: listingsError } = await supabase
+    .from('listings')
+    .select(`
+      *,
+      profiles: seller_id(id, username, email)
+    `)
+    .order('posted_at', { ascending: false });
+
+  if (listingsError) {
+    console.error('Error fetching listings:', listingsError);
+  }
+
+  return {
+    users: users || [],
+    listings: listings || [],
+    currentUserId: session.user.id
+  };
+}
+
+export default async function AdminPage() {
+  try {
+    const adminData = await getAdminData();
+    
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Admin Panel</h1>
+            <p className="text-gray-600 mt-2">Manage users and listings</p>
+          </div>
+          
+          <AdminDashboard 
+            initialUsers={adminData.users}
+            initialListings={adminData.listings}
+            currentUserId={adminData.currentUserId}
+          />
+        </div>
+      </div>
+    );
+  } catch (error) {
+    console.error('Admin page error:', error);
+    redirect('/');
+  }
+}
+
+export const dynamic = "force-dynamic";

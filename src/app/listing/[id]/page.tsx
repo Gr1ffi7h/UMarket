@@ -130,7 +130,7 @@ export default function MinimalListingDetailsPage({ params }: { params: Promise<
               Listing Not Found
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-              The listing you're looking for doesn't exist or has been removed.
+              Don&apos;t see what you&apos;re looking for? The listing doesn&apos;t exist or has been removed.
             </p>
             <Button href="/browse" variant="primary" size="md">
               Browse Other Listings

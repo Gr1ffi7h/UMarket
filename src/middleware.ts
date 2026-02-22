@@ -18,6 +18,7 @@ const protectedRoutes = [
   '/profile',
   '/my-listings',
   '/listing',
+  '/admin',
 ];
 
 // Routes that should be accessible without authentication
@@ -69,7 +70,23 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
 
-    // User is authenticated, allow access
+    // Check for admin route access
+    if (pathname.startsWith('/admin')) {
+      // Get user profile to check role
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', session.user.id)
+        .single();
+
+      if (profileError || !profile || profile.role !== 'admin') {
+        // Redirect to home if not admin
+        const homeUrl = new URL('/', request.url);
+        return NextResponse.redirect(homeUrl);
+      }
+    }
+
+    // User is authenticated and authorized, allow access
     return NextResponse.next();
   } catch (error) {
     console.error('Middleware error:', error);

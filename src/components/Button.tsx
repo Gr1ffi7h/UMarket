@@ -19,7 +19,7 @@ export interface ButtonProps {
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   loading?: boolean;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
   type?: 'button' | 'submit' | 'reset';
   href?: string;
 }
@@ -114,6 +114,7 @@ export function Button({
       <MotionLink
         href={href}
         className={classes}
+        onClick={onClick}
         {...buttonProps}
         {...props}
       >

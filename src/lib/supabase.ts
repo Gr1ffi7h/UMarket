@@ -55,6 +55,7 @@ export interface User {
   email: string;
   campus: string;
   avatar_url?: string;
+  role?: string;
   created_at: string;
 }
 

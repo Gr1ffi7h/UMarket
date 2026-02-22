@@ -68,6 +68,15 @@ export function MinimalNav() {
     { href: '/profile', label: 'Profile' },
   ];
 
+  const handleProtectedNavClick = (href: string) => {
+    return (e: React.MouseEvent<HTMLAnchorElement>) => {
+      if (!user) {
+        e.preventDefault();
+        window.location.href = `/login?returnTo=${encodeURIComponent(href)}`;
+      }
+    };
+  };
+
   const navItems = user ? protectedNavItems : publicNavItems;
 
   return (
@@ -86,17 +95,21 @@ export function MinimalNav() {
             {loading ? (
               <div className="w-16 h-6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
             ) : (
-              navItems.map((item) => (
-                <Button
-                  key={item.href}
-                  href={item.href}
-                  variant="ghost"
-                  size="sm"
-                  className="text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark"
-                >
-                  {item.label}
-                </Button>
-              ))
+              navItems.map((item) => {
+                const isProtected = !user && protectedNavItems.some(nav => nav.href === item.href);
+                return (
+                  <Button
+                    key={item.href}
+                    href={item.href}
+                    variant="ghost"
+                    size="sm"
+                    className="text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark"
+                    onClick={isProtected ? handleProtectedNavClick(item.href) : undefined}
+                  >
+                    {item.label}
+                  </Button>
+                );
+              })
             )}
             <div className="ml-2">
               <ThemeToggle />
